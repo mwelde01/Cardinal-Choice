@@ -55,12 +55,20 @@ Screens for faculty and staff to monitor and review submissions.
 
 ## Key Technical Decisions (Confirmed)
 
-- **Student authentication:** Standalone email/password login — NOT university SSO
+- **Student authentication:** Email + password login — NOT university SSO, NOT magic links
+  - Account creation flow: admin creates account using student's university email → student receives one-time access code via email → student uses access code to activate account and set a password → all future logins use email + password
+  - Login identifier: university email address (not username)
 - **Admin authentication:** Same login system, different role
 - **Video submissions:** Students submit Panopto embed code (university-provided platform); video plays embedded on Portfolio Preview page — no file upload, no storage cost
 - **PDF viewing:** Read-only viewer only — no annotation or markup capability needed
 - **File uploads:** PDFs, Word docs, audio files for milestones; Panopto embed link for final track deliverable
 - **File storage:** University server preferred; Supabase storage as fallback if university hosting unavailable
+
+## Pending Decisions (Awaiting University IT Conversation)
+
+- **Hosting path:** University-hosted (in-house, ~$0/yr) vs. cloud (Vercel + Supabase, ~$540/yr) — blocked on university IT proposal/approval process
+- **File storage:** University server vs. Supabase storage — depends on hosting outcome above
+- **Outside vendor approval:** University requires a proposal process for outside vendors (Vercel, Supabase) — IT conversation needed before committing to cloud path
 
 ---
 
@@ -90,7 +98,7 @@ Screens for faculty and staff to monitor and review submissions.
 
 ### Storage Projection (Files Only — No Video)
 | Timeframe | Students | Estimated Storage |
-|-----------|---------|-----------------|
+|-----------|---------|------------------|
 | Year 1 | 120 | ~3 GB |
 | Year 3 | 360 | ~9 GB |
 | Year 5 | 600 | ~15 GB |
