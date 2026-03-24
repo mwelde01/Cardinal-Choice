@@ -43,7 +43,90 @@ Screens for faculty and staff to monitor and review submissions.
 
 ## Tech Stack
 
-> To be documented as development begins.
+| Layer | Technology | Notes |
+|-------|-----------|-------|
+| **Frontend / Hosting** | Next.js on Vercel | Or university-hosted if IT supports it |
+| **Database + Auth** | Supabase | Includes email/password auth, PostgreSQL |
+| **File Storage** | University server (preferred) or Supabase | University server = $0; Supabase 100GB included in Pro plan |
+| **Video** | Panopto embed codes | Students paste Panopto embed code for final deliverable — no video file upload |
+| **PDF Viewer** | Read-only embedded viewer | No markup or annotation needed |
+
+---
+
+## Key Technical Decisions (Confirmed)
+
+- **Student authentication:** Standalone email/password login — NOT university SSO
+- **Admin authentication:** Same login system, different role
+- **Video submissions:** Students submit Panopto embed code (university-provided platform); video plays embedded on Portfolio Preview page — no file upload, no storage cost
+- **PDF viewing:** Read-only viewer only — no annotation or markup capability needed
+- **File uploads:** PDFs, Word docs, audio files for milestones; Panopto embed link for final track deliverable
+- **File storage:** University server preferred; Supabase storage as fallback if university hosting unavailable
+
+---
+
+## Hosting & Cost Estimates
+
+### Annual Cost — University Hosts Everything
+| Component | Cost |
+|-----------|------|
+| University server (app + files) | ~$0 |
+| **Total** | **~$0/yr** |
+
+### Annual Cost — Cloud Hosting (Vercel + Supabase)
+| Component | Cost |
+|-----------|------|
+| Vercel Pro (web app) | ~$240/yr |
+| Supabase Pro (database + auth + file storage) | ~$300/yr |
+| Video storage | $0 (Panopto — university-provided) |
+| **Total** | **~$540/yr** |
+
+### Annual Cost — Hybrid (Cloud App + University File Storage)
+| Component | Cost |
+|-----------|------|
+| Vercel Pro | ~$240/yr |
+| Supabase (database + auth only) | ~$300/yr |
+| File storage | $0 (university server) |
+| **Total** | **~$540/yr** |
+
+### Storage Projection (Files Only — No Video)
+| Timeframe | Students | Estimated Storage |
+|-----------|---------|-----------------|
+| Year 1 | 120 | ~3 GB |
+| Year 3 | 360 | ~9 GB |
+| Year 5 | 600 | ~15 GB |
+
+Storage remains well within Supabase Pro 100GB limit for the foreseeable future.
+
+---
+
+## Build Phases
+
+### Phase 1 — Foundation
+- Hosting setup (university IT conversation or Vercel/Supabase)
+- Database schema design
+- Email/password authentication
+- Student and admin role setup
+
+### Phase 2 — Student Experience
+- Student Dashboard
+- Curriculum Submission Monitor (11 milestones + status badges)
+- Course-Based Uploads (file drop-zones + Panopto link field)
+- Portfolio Preview (with embedded Panopto video player)
+- Sharing & Permissions (secure links for external reviewers)
+
+### Phase 3 — Admin Console
+- Submission Management Console (sortable list, status filters, volume analytics)
+- Submission Review Detail (read-only PDF viewer, rubric checklist, approval/revision controls)
+
+### Phase 4 — Testing & Launch
+- Pilot with small student group and one or two faculty reviewers
+- Bug fixes and refinements
+- Full rollout
+
+### Key Dependency
+University IT conversation should happen before or during Phase 1 to determine hosting path.
+
+---
 
 ---
 
