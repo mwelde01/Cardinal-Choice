@@ -107,6 +107,15 @@ Storage remains well within Supabase Pro 100GB limit for the foreseeable future.
 
 ---
 
+## Build Progress
+
+### Phase 1 Status (as of 2026-03-24)
+- [x] Supabase project created
+- [x] Database schema deployed — SQL ran successfully in Supabase SQL Editor ("no rows returned" is expected/correct behavior for DDL statements)
+- [ ] **Next step: Set up authentication** (email/password, student + admin roles)
+
+---
+
 ## Build Phases
 
 ### Phase 1 — Foundation
