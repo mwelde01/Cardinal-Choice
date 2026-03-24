@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Dashboard | Cardinal Choice</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary-fixed": "#410000",
+              "inverse-primary": "#ffb4a8",
+              "tertiary-fixed": "#ffdea1",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed-variant": "#930000",
+              "surface-container-lowest": "#ffffff",
+              "background": "#f9f9f9",
+              "on-secondary": "#ffffff",
+              "primary-fixed-dim": "#ffb4a8",
+              "tertiary": "#503900",
+              "secondary-container": "#fd7d6b",
+              "on-primary": "#ffffff",
+              "secondary-fixed": "#ffdad4",
+              "on-surface-variant": "#5c403b",
+              "outline": "#916f6a",
+              "surface-container-highest": "#e2e2e2",
+              "on-background": "#1b1b1b",
+              "surface-container-low": "#f3f3f3",
+              "surface-tint": "#bc130a",
+              "primary": "#810000",
+              "on-tertiary-fixed": "#261900",
+              "surface-container-high": "#e8e8e8",
+              "on-tertiary-fixed-variant": "#5c4300",
+              "secondary": "#a43b2d",
+              "surface-container": "#eeeeee",
+              "on-secondary-fixed-variant": "#842419",
+              "secondary-fixed-dim": "#ffb4a8",
+              "inverse-on-surface": "#f1f1f1",
+              "on-error": "#ffffff",
+              "on-secondary-fixed": "#410000",
+              "on-primary-container": "#ffb7ac",
+              "surface": "#f9f9f9",
+              "error": "#ba1a1a",
+              "primary-fixed": "#ffdad4",
+              "on-tertiary-container": "#febe10",
+              "on-secondary-container": "#71160d",
+              "tertiary-container": "#6d4f00",
+              "error-container": "#ffdad6",
+              "surface-variant": "#e2e2e2",
+              "tertiary-fixed-dim": "#fcbc0b",
+              "primary-container": "#ad0000",
+              "surface-bright": "#f9f9f9",
+              "surface-dim": "#dadada",
+              "outline-variant": "#e5bdb7",
+              "on-surface": "#1b1b1b",
+              "inverse-surface": "#303030",
+              "on-error-container": "#93000a"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .signature-gradient {
+        background: linear-gradient(135deg, #810000 0%, #ad0000 100%);
+      }
+      .ghost-shadow {
+        box-shadow: 0 40px 40px -10px rgba(27, 27, 27, 0.04);
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- Top Navigation Shell -->
+<nav class="fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md shadow-[0_40px_40px_-10px_rgba(27,27,27,0.04)]">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-red-800 uppercase font-headline">Cardinal Choice</span>
+<div class="hidden md:flex gap-6 items-center font-headline tracking-tight text-sm font-semibold">
+<a class="text-red-800 border-b-2 border-red-800 pb-1" href="#">Dashboard</a>
+<a class="text-zinc-500 hover:text-red-700 transition-colors" href="#">Materials</a>
+<a class="text-zinc-500 hover:text-red-700 transition-colors" href="#">Portfolio</a>
+<a class="text-zinc-500 hover:text-red-700 transition-colors" href="#">Settings</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-zinc-100/50 rounded-md transition-all">
+<span class="material-symbols-outlined text-zinc-600">notifications</span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant/20">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold font-headline">Alex Chen</p>
+<p class="text-[10px] text-zinc-500 uppercase tracking-widest">MBA Candidate</p>
+</div>
+<img alt="Student Profile Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-primary/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrjNDxSHLCtIvRnmS_M6zYpr8SAZztecLudxCa5bCPPkRzuqsOrKBuNsgcMglHZcCKsX3o4er-JBeFGtAjbs1vFRdh6S1P4YdtEQtAEg0TwAWElCqQIr_c9fw4S0L-YSQoE31urSpeT0gjYhALQMYzGn5_Wzb3eMvGQDWwziWpUd_qlIqhk0SNnZ-qe6VK8D3YJ0ZkQRiG1pBJEK6JRiG9CoXwP4ZqyKDpvi7mbjYwnGCnuD3-4rn-cs39siDBSefoAFbIf6qln7c9"/>
+</div>
+</div>
+</div>
+</nav>
+<!-- Sidebar Shell (Web only) -->
+<aside class="hidden lg:flex h-screen w-64 fixed left-0 top-0 flex-col p-4 gap-2 bg-zinc-50 z-40 pt-24">
+<div class="px-4 mb-6">
+<h3 class="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-4">Workspace</h3>
+<div class="space-y-1">
+<a class="flex items-center gap-3 p-3 bg-white text-red-800 shadow-sm rounded-lg font-medium text-sm transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">dashboard</span> Overview
+                </a>
+<a class="flex items-center gap-3 p-3 text-zinc-600 hover:bg-zinc-100 rounded-lg text-sm transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">account_tree</span> Curriculum
+                </a>
+<a class="flex items-center gap-3 p-3 text-zinc-600 hover:bg-zinc-100 rounded-lg text-sm transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">folder_open</span> My Files
+                </a>
+<a class="flex items-center gap-3 p-3 text-zinc-600 hover:bg-zinc-100 rounded-lg text-sm transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">share</span> Access
+                </a>
+</div>
+</div>
+<div class="mt-auto px-4 pb-4 space-y-1">
+<button class="w-full py-3 signature-gradient text-white rounded-md text-sm font-semibold mb-6 shadow-lg shadow-primary/20 active:scale-95 transition-all">
+                Submit Portfolio
+            </button>
+<a class="flex items-center gap-3 p-2 text-zinc-500 hover:text-red-800 transition-colors text-sm" href="#">
+<span class="material-symbols-outlined text-lg">help_outline</span> Help
+            </a>
+<a class="flex items-center gap-3 p-2 text-zinc-500 hover:text-red-800 transition-colors text-sm" href="#">
+<span class="material-symbols-outlined text-lg">logout</span> Sign Out
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:ml-64 pt-28 pb-12 px-6 md:px-12 max-w-7xl">
+<!-- Header Section -->
+<header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="space-y-2">
+<h1 class="text-5xl font-extrabold font-headline tracking-tighter text-on-background">Welcome back, <span class="text-primary">Alex</span>.</h1>
+<p class="text-zinc-500 font-medium max-w-md">Your Cardinal Choice Portfolio is organized across 11 core milestones.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-6 py-4 bg-zinc-100 text-zinc-700 font-bold text-sm rounded-md hover:bg-zinc-200 transition-all active:scale-95">
+<span class="material-symbols-outlined">download</span> SYLLABUS
+                </button>
+<button class="flex items-center gap-2 px-6 py-4 bg-tertiary-fixed-dim text-on-tertiary-fixed font-bold text-sm rounded-md hover:brightness-95 transition-all active:scale-95">
+<span class="material-symbols-outlined">add_box</span> QUICK UPLOAD
+                </button>
+</div>
+</header>
+<div class="grid grid-cols-12 gap-8">
+<!-- Main Content Area -->
+<div class="col-span-12 lg:col-span-8 space-y-12">
+<!-- Progress Tracker: Milestones Grid -->
+<section>
+<div class="flex items-center justify-between mb-8">
+<div>
+<h2 class="text-2xl font-bold font-headline tracking-tight">Milestone Progress</h2>
+<p class="text-xs text-zinc-500 uppercase tracking-widest font-bold mt-1">11 Core Course Requirements</p>
+</div>
+<div class="text-right">
+<span class="text-2xl font-black font-headline text-primary">8/11</span>
+<p class="text-[10px] text-zinc-400 font-bold uppercase">Completed</p>
+</div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+<!-- Milestone Course Cards -->
+<div class="p-4 bg-white rounded-xl border-2 border-primary/20 flex flex-col items-center gap-3 relative group hover:border-primary transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="text-center">
+<p class="text-xs font-bold font-headline">MBA 625</p>
+<p class="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter">Financial Accounting</p>
+</div>
+</div>
+<div class="p-4 bg-white rounded-xl border-2 border-primary/20 flex flex-col items-center gap-3 relative group hover:border-primary transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="text-center">
+<p class="text-xs font-bold font-headline">MBA 626</p>
+<p class="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter">Applied Micro</p>
+</div>
+</div>
+<div class="p-4 bg-white rounded-xl border-2 border-primary/20 flex flex-col items-center gap-3 relative group hover:border-primary transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="text-center">
+<p class="text-xs font-bold font-headline">MBA 628</p>
+<p class="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter">Managerial Accounting</p>
+</div>
+</div>
+<div class="p-4 bg-white rounded-xl border-2 border-primary/20 flex flex-col items-center gap-3 relative group hover:border-primary transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="text-center">
+<p class="text-xs font-bold font-headline">MBA 630</p>
+<p class="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter">Operations Design</p>
+</div>
+</div>
+<div class="p-4 bg-white rounded-xl border-2 border-primary/20 flex flex-col items-center gap-3 relative group hover:border-primary transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="text-center">
+<p class="text-xs font-bold font-headline">MBA 631</p>
+<p class="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter">Data Analysis</p>
+</div>
+</div>
+<div class="p-4 bg-white rounded-xl border-2 border-primary/20 flex flex-col items-center gap-3 relative group hover:border-primary transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="text-center">
+<p class="text-xs font-bold font-headline">MBA 632</p>
+<p class="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter">Strategic Comm</p>
+</div>
+</div>
+<div class="p-4 bg-white rounded-xl border-2 border-primary/20 flex flex-col items-center gap-3 relative group hover:border-primary transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="text-center">
+<p class="text-xs font-bold font-headline">MBA 635</p>
+<p class="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter">Financial Management</p>
+</div>
+</div>
+<div class="p-4 bg-white rounded-xl border-2 border-primary/20 flex flex-col items-center gap-3 relative group hover:border-primary transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="text-center">
+<p class="text-xs font-bold font-headline">MBA 640</p>
+<p class="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter">Marketing Management</p>
+</div>
+</div>
+<div class="p-4 bg-surface-container-low rounded-xl border-2 border-transparent flex flex-col items-center gap-3 relative group hover:border-zinc-300 transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-zinc-200 flex items-center justify-center text-zinc-400">
+<span class="material-symbols-outlined text-xl">pending</span>
+</div>
+<div class="text-center">
+<p class="text-xs font-bold font-headline">MBA 655</p>
+<p class="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter">Strategic Management</p>
+</div>
+</div>
+<div class="p-4 bg-surface-container-low rounded-xl border-2 border-transparent flex flex-col items-center gap-3 relative group hover:border-zinc-300 transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-zinc-200 flex items-center justify-center text-zinc-400">
+<span class="material-symbols-outlined text-xl">pending</span>
+</div>
+<div class="text-center">
+<p class="text-xs font-bold font-headline">MBA 656</p>
+<p class="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter">Leadership &amp; Org</p>
+</div>
+</div>
+<div class="p-4 bg-surface-container-low rounded-xl border-2 border-transparent flex flex-col items-center gap-3 relative group hover:border-zinc-300 transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-zinc-200 flex items-center justify-center text-zinc-400">
+<span class="material-symbols-outlined text-xl">pending</span>
+</div>
+<div class="text-center">
+<p class="text-xs font-bold font-headline">MBA 668</p>
+<p class="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter">Info Tech Management</p>
+</div>
+</div>
+<!-- Info Card -->
+<div class="p-4 bg-zinc-100 rounded-xl flex items-center justify-center">
+<p class="text-[9px] text-zinc-500 font-medium text-center">MBA 621 and 623 are exempt from Cardinal Choice.</p>
+</div>
+</div>
+</section>
+<!-- Final Deliverable Selector -->
+<section class="bg-white rounded-3xl p-10 ghost-shadow border border-zinc-100">
+<div class="flex flex-col md:flex-row gap-12 items-start">
+<div class="flex-1 space-y-6">
+<header>
+<h2 class="text-3xl font-black font-headline tracking-tighter leading-none mb-2">Final Deliverable</h2>
+<p class="text-zinc-500 text-sm leading-relaxed">Synthesis of your academic milestones based on your selected track.</p>
+</header>
+<div class="space-y-3">
+<label class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block">Select Your Track</label>
+<div class="grid grid-cols-1 gap-3">
+<button class="flex items-center justify-between p-4 rounded-xl border-2 border-primary bg-primary/5 text-left transition-all group">
+<div>
+<p class="font-headline font-bold text-sm">Career Plan</p>
+<p class="text-[10px] text-zinc-500">Career Track: Explore your current or future path</p>
+</div>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">radio_button_checked</span>
+</button>
+<button class="flex items-center justify-between p-4 rounded-xl border-2 border-zinc-100 hover:border-zinc-300 text-left transition-all group">
+<div>
+<p class="font-headline font-bold text-sm">White Paper</p>
+<p class="text-[10px] text-zinc-500">Industry Track: Look at a critical industry problem</p>
+</div>
+<span class="material-symbols-outlined text-zinc-300">radio_button_unchecked</span>
+</button>
+<button class="flex items-center justify-between p-4 rounded-xl border-2 border-zinc-100 hover:border-zinc-300 text-left transition-all group">
+<div>
+<p class="font-headline font-bold text-sm">Process Improvement Plan</p>
+<p class="text-[10px] text-zinc-500">Issue Track: Focus on systemic organizational issues</p>
+</div>
+<span class="material-symbols-outlined text-zinc-300">radio_button_unchecked</span>
+</button>
+</div>
+</div>
+</div>
+<div class="w-full md:w-64 aspect-[3/4] bg-zinc-50 rounded-2xl flex flex-col items-center justify-center border-2 border-dashed border-zinc-200 group hover:bg-zinc-100 transition-all cursor-pointer">
+<span class="material-symbols-outlined text-4xl text-zinc-300 mb-2">upload_file</span>
+<p class="text-xs font-bold text-zinc-400">Upload Final Synthesis</p>
+<p class="text-[10px] text-zinc-300 mt-1 uppercase tracking-tighter">Available after 11 milestones</p>
+</div>
+</div>
+</section>
+<!-- Phase Timeline (Editorial Overview) -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="p-8 bg-surface-container-low rounded-2xl border-l-4 border-red-800">
+<span class="text-[10px] font-black text-red-800 uppercase tracking-[0.2em] mb-4 block">Phase One</span>
+<h3 class="text-xl font-bold font-headline mb-2">Explore</h3>
+<p class="text-xs text-zinc-600 leading-relaxed">Defining your curricular pursuit through question-asking and exploratory positions.</p>
+<div class="mt-4 pt-4 border-t border-zinc-200">
+<p class="text-[9px] font-bold text-zinc-400 uppercase">Portfolio Submission #1 Due:</p>
+<p class="text-xs font-bold text-zinc-800">Completion of MBA 631</p>
+</div>
+</div>
+<div class="p-8 bg-surface-container-low rounded-2xl border-l-4 border-red-800">
+<span class="text-[10px] font-black text-red-800 uppercase tracking-[0.2em] mb-4 block">Phase Two</span>
+<h3 class="text-xl font-bold font-headline mb-2">Analyze</h3>
+<p class="text-xs text-zinc-600 leading-relaxed">Quantitative analysis to understand financial challenges related to your topic.</p>
+<div class="mt-4 pt-4 border-t border-zinc-200">
+<p class="text-[9px] font-bold text-zinc-400 uppercase">Portfolio Submission #2 Due:</p>
+<p class="text-xs font-bold text-zinc-800">Completion of MBA 635</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Side Rail: Activity Feed & Tools -->
+<aside class="col-span-12 lg:col-span-4 space-y-8">
+<!-- Curriculum Timeline -->
+<div class="bg-white rounded-2xl p-8 ghost-shadow border border-zinc-100">
+<h3 class="text-sm font-bold font-headline uppercase tracking-widest text-zinc-400 mb-6">Curriculum Timeline</h3>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-red-800 text-white flex items-center justify-center flex-shrink-0 text-[10px] font-bold">1</div>
+<div>
+<p class="text-sm font-bold">Foundation</p>
+<p class="text-xs text-zinc-500">Core Milestones 1-4</p>
+<div class="mt-2 px-2 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded inline-block">COMPLETE</div>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-red-800 text-white flex items-center justify-center flex-shrink-0 text-[10px] font-bold">2</div>
+<div>
+<p class="text-sm font-bold">Intermediate</p>
+<p class="text-xs text-zinc-500">Core Milestones 5-8</p>
+<div class="mt-2 px-2 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded inline-block">COMPLETE</div>
+</div>
+</div>
+<div class="flex gap-4 opacity-50">
+<div class="w-8 h-8 rounded-full bg-zinc-200 text-zinc-500 flex items-center justify-center flex-shrink-0 text-[10px] font-bold">3</div>
+<div>
+<p class="text-sm font-bold text-zinc-400">Advanced</p>
+<p class="text-xs text-zinc-400">Core Milestones 9-11</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-10 py-3 border border-outline/10 text-[10px] font-bold uppercase tracking-widest text-zinc-500 hover:bg-zinc-50 transition-all rounded">
+                        Full Program Timeline
+                    </button>
+</div>
+<!-- Activity Feed (Brief) -->
+<div class="bg-surface-container-low rounded-2xl p-8">
+<h3 class="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-6">Recent Activity</h3>
+<div class="space-y-4">
+<div class="flex gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0"></div>
+<p class="text-xs font-medium"><span class="font-bold">MBA 640</span> milestone approved</p>
+</div>
+<div class="flex gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0"></div>
+<p class="text-xs font-medium">New feedback on <span class="font-bold">Strategic Comm</span></p>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Mobile Bottom Navigation Shell -->
+<nav class="md:hidden fixed bottom-0 w-full bg-white border-t border-zinc-100 flex justify-around py-3 z-50">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-zinc-400" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Timeline</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-zinc-400" href="#">
+<span class="material-symbols-outlined">folder</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Files</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-zinc-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Profile</span>
+</a>
+</nav>
+</body></html>

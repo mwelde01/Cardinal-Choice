@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Dashboard | Cardinal Choice</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary-fixed": "#410000",
+              "inverse-primary": "#ffb4a8",
+              "tertiary-fixed": "#ffdea1",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed-variant": "#930000",
+              "surface-container-lowest": "#ffffff",
+              "background": "#f9f9f9",
+              "on-secondary": "#ffffff",
+              "primary-fixed-dim": "#ffb4a8",
+              "tertiary": "#503900",
+              "secondary-container": "#fd7d6b",
+              "on-primary": "#ffffff",
+              "secondary-fixed": "#ffdad4",
+              "on-surface-variant": "#5c403b",
+              "outline": "#916f6a",
+              "surface-container-highest": "#e2e2e2",
+              "on-background": "#1b1b1b",
+              "surface-container-low": "#f3f3f3",
+              "surface-tint": "#bc130a",
+              "primary": "#810000",
+              "on-tertiary-fixed": "#261900",
+              "surface-container-high": "#e8e8e8",
+              "on-tertiary-fixed-variant": "#5c4300",
+              "secondary": "#a43b2d",
+              "surface-container": "#eeeeee",
+              "on-secondary-fixed-variant": "#842419",
+              "secondary-fixed-dim": "#ffb4a8",
+              "inverse-on-surface": "#f1f1f1",
+              "on-error": "#ffffff",
+              "on-secondary-fixed": "#410000",
+              "on-primary-container": "#ffb7ac",
+              "surface": "#f9f9f9",
+              "error": "#ba1a1a",
+              "primary-fixed": "#ffdad4",
+              "on-tertiary-container": "#febe10",
+              "on-secondary-container": "#71160d",
+              "tertiary-container": "#6d4f00",
+              "error-container": "#ffdad6",
+              "surface-variant": "#e2e2e2",
+              "tertiary-fixed-dim": "#fcbc0b",
+              "primary-container": "#ad0000",
+              "surface-bright": "#f9f9f9",
+              "surface-dim": "#dadada",
+              "outline-variant": "#e5bdb7",
+              "on-surface": "#1b1b1b",
+              "inverse-surface": "#303030",
+              "on-error-container": "#93000a"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .signature-gradient {
+        background: linear-gradient(135deg, #810000 0%, #ad0000 100%);
+      }
+      .ghost-shadow {
+        box-shadow: 0 40px 40px -10px rgba(27, 27, 27, 0.04);
+      }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- Top Navigation Shell -->
+<nav class="fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md shadow-[0_40px_40px_-10px_rgba(27,27,27,0.04)]">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-red-800 uppercase font-headline">Cardinal Choice</span>
+<div class="hidden md:flex gap-6 items-center font-headline tracking-tight text-sm font-semibold">
+<a class="text-red-800 border-b-2 border-red-800 pb-1" href="#">Dashboard</a>
+<a class="text-zinc-500 hover:text-red-700 transition-colors" href="#">Materials</a>
+<a class="text-zinc-500 hover:text-red-700 transition-colors" href="#">Portfolio</a>
+<a class="text-zinc-500 hover:text-red-700 transition-colors" href="#">Settings</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-zinc-100/50 rounded-md transition-all">
+<span class="material-symbols-outlined text-zinc-600">notifications</span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant/20">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold font-headline">Alex Chen</p>
+<p class="text-[10px] text-zinc-500 uppercase tracking-widest">Sophomore</p>
+</div>
+<img alt="Student Profile Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-primary/10" data-alt="Close up portrait of a young student smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrjNDxSHLCtIvRnmS_M6zYpr8SAZztecLudxCa5bCPPkRzuqsOrKBuNsgcMglHZcCKsX3o4er-JBeFGtAjbs1vFRdh6S1P4YdtEQtAEg0TwAWElCqQIr_c9fw4S0L-YSQoE31urSpeT0gjYhALQMYzGn5_Wzb3eMvGQDWwziWpUd_qlIqhk0SNnZ-qe6VK8D3YJ0ZkQRiG1pBJEK6JRiG9CoXwP4ZqyKDpvi7mbjYwnGCnuD3-4rn-cs39siDBSefoAFbIf6qln7c9"/>
+</div>
+</div>
+</div>
+</nav>
+<!-- Sidebar Shell (Web only) -->
+<aside class="hidden lg:flex h-screen w-64 fixed left-0 top-0 flex-col p-4 gap-2 bg-zinc-50 z-40 pt-24">
+<div class="px-4 mb-6">
+<h3 class="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-4">Workspace</h3>
+<div class="space-y-1">
+<a class="flex items-center gap-3 p-3 bg-white text-red-800 shadow-sm rounded-lg font-medium text-sm transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">dashboard</span> Overview
+                </a>
+<a class="flex items-center gap-3 p-3 text-zinc-600 hover:bg-zinc-100 rounded-lg text-sm transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">folder_open</span> My Files
+                </a>
+<a class="flex items-center gap-3 p-3 text-zinc-600 hover:bg-zinc-100 rounded-lg text-sm transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">visibility</span> Public View
+                </a>
+<a class="flex items-center gap-3 p-3 text-zinc-600 hover:bg-zinc-100 rounded-lg text-sm transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">share</span> Access
+                </a>
+</div>
+</div>
+<div class="mt-auto px-4 pb-4 space-y-1">
+<button class="w-full py-3 signature-gradient text-white rounded-md text-sm font-semibold mb-6 shadow-lg shadow-primary/20 active:scale-95 transition-all">
+                Submit for Review
+            </button>
+<a class="flex items-center gap-3 p-2 text-zinc-500 hover:text-red-800 transition-colors text-sm" href="#">
+<span class="material-symbols-outlined text-lg">help_outline</span> Help
+            </a>
+<a class="flex items-center gap-3 p-2 text-zinc-500 hover:text-red-800 transition-colors text-sm" href="#">
+<span class="material-symbols-outlined text-lg">logout</span> Sign Out
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:ml-64 pt-28 pb-12 px-6 md:px-12 max-w-7xl">
+<!-- Header Section -->
+<header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="space-y-2">
+<h1 class="text-5xl font-extrabold font-headline tracking-tighter text-on-background">Welcome back, <span class="text-primary">Alex</span>.</h1>
+<p class="text-zinc-500 font-medium max-w-md">Your portfolio is currently 75% complete. 2 documents are pending review.</p>
+</div>
+<button class="flex items-center gap-2 px-6 py-4 bg-tertiary-fixed-dim text-on-tertiary-fixed font-bold text-sm rounded-md hover:brightness-95 transition-all active:scale-95">
+<span class="material-symbols-outlined">add_box</span> QUICK UPLOAD
+            </button>
+</header>
+<div class="grid grid-cols-12 gap-8">
+<!-- Bento Grid: Main Dashboard Area -->
+<div class="col-span-12 lg:col-span-8 space-y-12">
+<!-- Stats Overview Row -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="p-6 bg-surface-container-low rounded-xl flex flex-col gap-4">
+<span class="material-symbols-outlined text-primary text-3xl">description</span>
+<div>
+<p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Total Assets</p>
+<p class="text-3xl font-black font-headline">24</p>
+</div>
+</div>
+<div class="p-6 bg-surface-container-low rounded-xl flex flex-col gap-4">
+<span class="material-symbols-outlined text-tertiary text-3xl">star</span>
+<div>
+<p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Showcased</p>
+<p class="text-3xl font-black font-headline">8</p>
+</div>
+</div>
+<div class="p-6 bg-surface-container-low rounded-xl flex flex-col gap-4">
+<span class="material-symbols-outlined text-zinc-600 text-3xl">analytics</span>
+<div>
+<p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Views</p>
+<p class="text-3xl font-black font-headline">1.2k</p>
+</div>
+</div>
+</section>
+<!-- Recent Uploads Section (Horizontal Scroll/Editorial Feel) -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-2xl font-bold font-headline tracking-tight">Recent Artifacts</h2>
+<a class="text-xs font-bold text-primary uppercase tracking-widest hover:underline" href="#">View All Library</a>
+</div>
+<div class="flex gap-6 overflow-x-auto pb-6 scrollbar-hide">
+<!-- PDF Card -->
+<div class="min-w-[280px] bg-white p-6 rounded-xl ghost-shadow flex flex-col gap-6 hover:translate-y-[-4px] transition-transform duration-300">
+<div class="w-full aspect-[4/5] bg-surface-container-high rounded-lg flex items-center justify-center relative overflow-hidden">
+<span class="material-symbols-outlined text-primary/20 text-6xl">picture_as_pdf</span>
+<div class="absolute top-3 left-3 px-2 py-1 bg-primary-fixed text-on-primary-fixed text-[10px] font-bold rounded">PDF</div>
+</div>
+<div>
+<h3 class="font-headline font-bold text-lg leading-tight mb-1">Thesis_v02_Architecture.pdf</h3>
+<p class="text-xs text-zinc-400">Uploaded 2 hours ago</p>
+</div>
+</div>
+<!-- Audio Card -->
+<div class="min-w-[280px] bg-white p-6 rounded-xl ghost-shadow flex flex-col gap-6 hover:translate-y-[-4px] transition-transform duration-300">
+<div class="w-full aspect-[4/5] bg-surface-container-high rounded-lg flex items-center justify-center relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-tertiary-fixed/30 to-transparent"></div>
+<span class="material-symbols-outlined text-tertiary/20 text-6xl">graphic_eq</span>
+<div class="absolute top-3 left-3 px-2 py-1 bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold rounded">MP3</div>
+</div>
+<div>
+<h3 class="font-headline font-bold text-lg leading-tight mb-1">Composition_Study_01.mp3</h3>
+<p class="text-xs text-zinc-400">Uploaded 1 day ago</p>
+</div>
+</div>
+<!-- Word Card -->
+<div class="min-w-[280px] bg-white p-6 rounded-xl ghost-shadow flex flex-col gap-6 hover:translate-y-[-4px] transition-transform duration-300">
+<div class="w-full aspect-[4/5] bg-surface-container-high rounded-lg flex items-center justify-center relative overflow-hidden">
+<span class="material-symbols-outlined text-zinc-300 text-6xl">description</span>
+<div class="absolute top-3 left-3 px-2 py-1 bg-zinc-200 text-zinc-700 text-[10px] font-bold rounded uppercase">DOCX</div>
+</div>
+<div>
+<h3 class="font-headline font-bold text-lg leading-tight mb-1">Literature_Review_Final.docx</h3>
+<p class="text-xs text-zinc-400">Uploaded 3 days ago</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Portfolio Progress Asymmetric Section -->
+<section class="bg-surface-container-low rounded-3xl p-12 flex flex-col md:flex-row gap-12 items-center">
+<div class="flex-1 space-y-6">
+<h2 class="text-3xl font-black font-headline tracking-tighter leading-none">Curate your legacy.</h2>
+<p class="text-zinc-600 text-sm leading-relaxed">Your digital portfolio is the narrative of your academic journey. Add 2 more case studies to reach "Distinction" status for your upcoming review.</p>
+<div class="w-full bg-zinc-200 h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[75%]"></div>
+</div>
+<div class="flex justify-between text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+<span>75% Complete</span>
+<span>Target: Professional</span>
+</div>
+</div>
+<div class="w-full md:w-1/3 aspect-square bg-white rounded-2xl ghost-shadow flex items-center justify-center relative rotate-3">
+<img alt="Student Portfolio Preview" class="w-full h-full object-cover rounded-2xl" data-alt="Abstract minimalist desk with high-end stationery and digital devices" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARUyFHHraL92tPddYCwJ-XcssevXvWPUr7ElpaodtyPpQ9hOAGdZXB5FStDm615T9XgY-ouojwk_swr5B7s8la-I-lPAB3DesxR1s3L-IfH78cYGevoM8HdMBgg-Po903V2X68VdAJqUWvqNqBANbWVnBg3cjFu_tdKiGP4fM4s9uSdu1hBPgeyVoDfpN4_yrSGkm7mGp6U3VBxnc3_u1fKlpYsv5VENfiB0syJIIc3hCSz1HK48XBh2C4twC-uGSrTdaAw7yQdPBt"/>
+<div class="absolute inset-0 bg-primary/10 rounded-2xl"></div>
+</div>
+</section>
+</div>
+<!-- Side Rail: Activity Feed -->
+<aside class="col-span-12 lg:col-span-4 space-y-8">
+<div class="bg-white rounded-2xl p-8 ghost-shadow">
+<h3 class="text-sm font-bold font-headline uppercase tracking-widest text-zinc-400 mb-8">Activity Feed</h3>
+<div class="space-y-8">
+<div class="flex gap-4">
+<div class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0"></div>
+<div>
+<p class="text-sm font-medium"><span class="font-bold">Professor Williams</span> approved <span class="text-primary italic">Architecture Thesis</span></p>
+<p class="text-[10px] text-zinc-400 mt-1 uppercase">20 mins ago</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-1.5 h-1.5 rounded-full bg-tertiary mt-1.5 flex-shrink-0"></div>
+<div>
+<p class="text-sm font-medium">New feedback received on <span class="italic font-bold">MP3 Audio Sample</span></p>
+<p class="text-[10px] text-zinc-400 mt-1 uppercase">2 hours ago</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-1.5 h-1.5 rounded-full bg-zinc-300 mt-1.5 flex-shrink-0"></div>
+<div>
+<p class="text-sm font-medium">You reached the <span class="font-bold">"Curator"</span> achievement badge</p>
+<p class="text-[10px] text-zinc-400 mt-1 uppercase">Yesterday</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-1.5 h-1.5 rounded-full bg-zinc-300 mt-1.5 flex-shrink-0"></div>
+<div>
+<p class="text-sm font-medium">Document <span class="italic">Capstone_Draft.pdf</span> was archived</p>
+<p class="text-[10px] text-zinc-400 mt-1 uppercase">3 days ago</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-10 py-3 border border-outline/10 text-[10px] font-bold uppercase tracking-widest text-zinc-500 hover:bg-zinc-50 transition-all rounded">
+                        Load More Activity
+                    </button>
+</div>
+<!-- Featured Tool -->
+</aside>
+</div>
+</main>
+<!-- Mobile Bottom Navigation Shell -->
+<nav class="md:hidden fixed bottom-0 w-full bg-white border-t border-zinc-100 flex justify-around py-3 z-50">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-zinc-400" href="#">
+<span class="material-symbols-outlined">folder</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Files</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-zinc-400" href="#">
+<span class="material-symbols-outlined">auto_stories</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Portfolio</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-zinc-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Profile</span>
+</a>
+</nav>
+</body></html>
