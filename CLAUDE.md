@@ -122,7 +122,7 @@ All screens were pre-designed as HTML prototypes (.txt files) and are being conv
 - `Curriculum Submission Monitor.txt` → `app/curriculum/page.tsx` (not yet built)
 - `Course Based Uploads.txt` → `app/uploads/page.tsx` (not yet built)
 - `Portfolio Preview.txt` → `app/portfolio/page.tsx` (not yet built)
-- `Submission Review Detail.txt` → `app/admin/review/page.tsx` (not yet built)
+- `Submission Review Detail.txt` → `app/admin/review/page.tsx` ✅
 - `Submissions Managment Console.txt` → `app/admin/submissions/page.tsx` ✅
 
 ---
@@ -137,7 +137,8 @@ All screens were pre-designed as HTML prototypes (.txt files) and are being conv
 - [x] Login page built — `app/login/page.tsx` (styled, connected to Supabase auth)
 - [x] Student Dashboard built — `app/dashboard/page.tsx`
 - [x] Admin Submissions Console built — `app/admin/submissions/page.tsx`
-- [ ] Remaining pages: Curriculum Submission Monitor, Course-Based Uploads, Portfolio Preview, Sharing & Permissions, Admin Submission Review Detail
+- [x] Admin Submission Review Detail built — `app/admin/review/page.tsx`
+- [ ] Remaining pages: Curriculum Submission Monitor, Course-Based Uploads, Portfolio Preview, Sharing & Permissions
 - [ ] **Next step: Wire up authentication** — protect pages, redirect after login, handle roles
 
 ---
