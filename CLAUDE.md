@@ -107,12 +107,38 @@ Storage remains well within Supabase Pro 100GB limit for the foreseeable future.
 
 ---
 
+## Next.js Project Setup
+
+- Project created at: `Documents/AI in Business Application/Reader/cardinal-choice`
+- Uses **Tailwind CSS v4** — configuration is in `app/globals.css` using `@import "tailwindcss"` and `@theme {}` block (NOT `tailwind.config.ts`)
+- Fonts loaded via Google Fonts links in `app/layout.tsx` (Inter + Manrope + Material Symbols)
+- Supabase client at `lib/supabase.ts` — reads from `.env.local`
+- `.env.local` contains `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+### HTML Design Mockups (in GitHub main branch)
+All screens were pre-designed as HTML prototypes (.txt files) and are being converted to Next.js pages:
+- `Student Dashboardl.txt` → `app/dashboard/page.tsx` ✅
+- `Curriculum Dashboard.txt` → alternate dashboard design (reference only)
+- `Curriculum Submission Monitor.txt` → `app/curriculum/page.tsx` (not yet built)
+- `Course Based Uploads.txt` → `app/uploads/page.tsx` (not yet built)
+- `Portfolio Preview.txt` → `app/portfolio/page.tsx` (not yet built)
+- `Submission Review Detail.txt` → `app/admin/review/page.tsx` (not yet built)
+- `Submissions Managment Console.txt` → `app/admin/submissions/page.tsx` ✅
+
+---
+
 ## Build Progress
 
-### Phase 1 Status (as of 2026-03-24)
+### Phase 1 Status (as of 2026-03-25)
 - [x] Supabase project created
 - [x] Database schema deployed — SQL ran successfully in Supabase SQL Editor ("no rows returned" is expected/correct behavior for DDL statements)
-- [ ] **Next step: Set up authentication** (email/password, student + admin roles)
+- [x] Next.js project created locally
+- [x] Supabase client connected via `.env.local`
+- [x] Login page built — `app/login/page.tsx` (styled, connected to Supabase auth)
+- [x] Student Dashboard built — `app/dashboard/page.tsx`
+- [x] Admin Submissions Console built — `app/admin/submissions/page.tsx`
+- [ ] Remaining pages: Curriculum Submission Monitor, Course-Based Uploads, Portfolio Preview, Sharing & Permissions, Admin Submission Review Detail
+- [ ] **Next step: Wire up authentication** — protect pages, redirect after login, handle roles
 
 ---
 
