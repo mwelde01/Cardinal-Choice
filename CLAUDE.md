@@ -142,8 +142,22 @@ All screens were pre-designed as HTML prototypes (.txt files) and are being conv
 - [x] Course-Based Uploads built — `app/uploads/page.tsx`
 - [x] Portfolio Preview built — `app/portfolio/page.tsx`
 - [x] Sharing & Permissions built — `app/sharing/page.tsx`
-- [ ] **Next step: Wire up authentication** — protect pages, redirect after login, handle roles
-- [ ] After auth: connect pages to live Supabase data, wire up navigation, activate buttons
+- [x] Middleware created — `middleware.ts` in root (protects all pages, redirects unauthenticated users to `/login`)
+- [x] `@supabase/ssr` package installed
+- [x] Login page updated to redirect students → `/dashboard`, admins → `/admin/submissions` based on role in profiles table
+- [x] Sign Out button wired up on dashboard — uses `lib/signout.ts`
+- [x] Test user created in Supabase: `test@louisville.edu` / `Test1234!` (role: student)
+- [x] RLS policy added to profiles table so users can read their own profile
+- [ ] **Next step: Fix post-login redirect** — `router.push` not triggering full page reload after login; need to replace with `window.location.href` in `app/login/page.tsx` (was mid-step when session ended)
+- [ ] After auth fixed: wire up Sign Out on remaining pages (curriculum, uploads, portfolio, sharing, admin pages)
+- [ ] Connect pages to live Supabase data
+- [ ] Wire up navigation links between pages
+
+## Authentication Notes
+- Middleware uses `@supabase/ssr` — different from client-side `@supabase/supabase-js` in `lib/supabase.ts`
+- After login, must use `window.location.href` (not `router.push`) to force full page reload so middleware can pick up the session cookie
+- Test user: `test@louisville.edu` / `Test1234!` — profile row exists in `profiles` table with role: student
+- Next admin test user should be created with role: admin to test admin redirect
 
 ---
 
