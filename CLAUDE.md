@@ -119,9 +119,9 @@ Storage remains well within Supabase Pro 100GB limit for the foreseeable future.
 All screens were pre-designed as HTML prototypes (.txt files) and are being converted to Next.js pages:
 - `Student Dashboardl.txt` → `app/dashboard/page.tsx` ✅
 - `Curriculum Dashboard.txt` → alternate dashboard design (reference only)
-- `Curriculum Submission Monitor.txt` → `app/curriculum/page.tsx` (not yet built)
-- `Course Based Uploads.txt` → `app/uploads/page.tsx` (not yet built)
-- `Portfolio Preview.txt` → `app/portfolio/page.tsx` (not yet built)
+- `Curriculum Submission Monitor.txt` → `app/curriculum/page.tsx` ✅
+- `Course Based Uploads.txt` → `app/uploads/page.tsx` ✅
+- `Portfolio Preview.txt` → `app/portfolio/page.tsx` ✅
 - `Submission Review Detail.txt` → `app/admin/review/page.tsx` ✅
 - `Submissions Managment Console.txt` → `app/admin/submissions/page.tsx` ✅
 
@@ -138,8 +138,12 @@ All screens were pre-designed as HTML prototypes (.txt files) and are being conv
 - [x] Student Dashboard built — `app/dashboard/page.tsx`
 - [x] Admin Submissions Console built — `app/admin/submissions/page.tsx`
 - [x] Admin Submission Review Detail built — `app/admin/review/page.tsx`
-- [ ] Remaining pages: Curriculum Submission Monitor, Course-Based Uploads, Portfolio Preview, Sharing & Permissions
+- [x] Curriculum Submission Monitor built — `app/curriculum/page.tsx`
+- [x] Course-Based Uploads built — `app/uploads/page.tsx`
+- [x] Portfolio Preview built — `app/portfolio/page.tsx`
+- [ ] Sharing & Permissions page (not yet built — `app/sharing/page.tsx`)
 - [ ] **Next step: Wire up authentication** — protect pages, redirect after login, handle roles
+- [ ] After auth: connect pages to live Supabase data, wire up navigation, activate buttons
 
 ---
 
