@@ -141,7 +141,7 @@ All screens were pre-designed as HTML prototypes (.txt files) and are being conv
 - [x] Curriculum Submission Monitor built — `app/curriculum/page.tsx`
 - [x] Course-Based Uploads built — `app/uploads/page.tsx`
 - [x] Portfolio Preview built — `app/portfolio/page.tsx`
-- [ ] Sharing & Permissions page (not yet built — `app/sharing/page.tsx`)
+- [x] Sharing & Permissions built — `app/sharing/page.tsx`
 - [ ] **Next step: Wire up authentication** — protect pages, redirect after login, handle roles
 - [ ] After auth: connect pages to live Supabase data, wire up navigation, activate buttons
 
