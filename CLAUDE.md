@@ -107,12 +107,114 @@ Storage remains well within Supabase Pro 100GB limit for the foreseeable future.
 
 ---
 
+## Next.js Project Setup
+
+- Project created at: `Documents/AI in Business Application/Reader/cardinal-choice`
+- Uses **Tailwind CSS v4** — configuration is in `app/globals.css` using `@import "tailwindcss"` and `@theme {}` block (NOT `tailwind.config.ts`)
+- Fonts loaded via Google Fonts links in `app/layout.tsx` (Inter + Manrope + Material Symbols)
+- Supabase client at `lib/supabase.ts` — uses `createBrowserClient` from `@supabase/ssr` (stores session in cookies so middleware can read it)
+- `.env.local` contains `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+### HTML Design Mockups (in GitHub main branch)
+All screens were pre-designed as HTML prototypes (.txt files) and have been converted to Next.js pages:
+- `Student Dashboardl.txt` → `app/dashboard/page.tsx` ✅
+- `Curriculum Dashboard.txt` → alternate dashboard design (reference only)
+- `Curriculum Submission Monitor.txt` → `app/curriculum/page.tsx` ✅
+- `Course Based Uploads.txt` → `app/uploads/page.tsx` ✅
+- `Portfolio Preview.txt` → `app/portfolio/page.tsx` ✅
+- `Sharing & Permissions` → `app/sharing/page.tsx` ✅
+- `Submission Review Detail.txt` → `app/admin/review/page.tsx` ✅
+- `Submissions Managment Console.txt` → `app/admin/submissions/page.tsx` ✅
+
+---
+
 ## Build Progress
 
-### Phase 1 Status (as of 2026-03-24)
+### Phase 1 Status (as of 2026-03-27)
 - [x] Supabase project created
-- [x] Database schema deployed — SQL ran successfully in Supabase SQL Editor ("no rows returned" is expected/correct behavior for DDL statements)
-- [ ] **Next step: Set up authentication** (email/password, student + admin roles)
+- [x] Database schema deployed
+- [x] Next.js project created locally
+- [x] Supabase client connected via `.env.local` — uses `createBrowserClient` from `@supabase/ssr`
+- [x] Login page built — `app/login/page.tsx` (styled, connected to Supabase auth)
+- [x] Student Dashboard built — `app/dashboard/page.tsx`
+- [x] Admin Submissions Console built — `app/admin/submissions/page.tsx`
+- [x] Admin Submission Review Detail built — `app/admin/review/page.tsx`
+- [x] Curriculum Submission Monitor built — `app/curriculum/page.tsx`
+- [x] Course-Based Uploads built — `app/uploads/page.tsx`
+- [x] Portfolio Preview built — `app/portfolio/page.tsx`
+- [x] Sharing & Permissions built — `app/sharing/page.tsx`
+- [x] Middleware created — `middleware.ts` in root (protects all pages, redirects unauthenticated users to `/login`)
+- [x] `@supabase/ssr` package installed
+- [x] Login page uses `window.location.href` (not `router.push`) for post-login redirect so middleware can pick up session cookie
+- [x] Role-based redirect working — students → `/dashboard`, admins → `/admin/submissions`
+- [x] Sign Out wired up on ALL pages using `lib/signout.ts`
+- [x] All pages have `'use client'` directive and `import { signOut } from '@/lib/signout'`
+- [x] Test user exists in Supabase: `test@louisville.edu` / `Test1234!` (role: student)
+- [x] RLS policy added to profiles table so users can read their own profile
+- [x] Navigation links partially wired — dashboard top nav done (Materials → `/uploads`, Portfolio → `/portfolio`)
+- [ ] **Next step: Finish wiring navigation links on `app/dashboard/page.tsx`** — left sidebar and mobile nav still have `href="#"` placeholders; user was mid-way through this when session ended
+- [ ] Wire navigation links on remaining pages: `curriculum`, `uploads`, `portfolio`, `sharing`, `admin/submissions`, `admin/review`
+- [ ] Create admin test user in Supabase (role: admin) to test admin redirect
+- [ ] Connect pages to live Supabase data
+- [ ] Wire up remaining navigation links between pages
+
+---
+
+## Authentication Notes
+- Middleware uses `@supabase/ssr` — `lib/supabase.ts` also uses `createBrowserClient` from `@supabase/ssr` (NOT `createClient` from `@supabase/supabase-js`) so sessions are stored in cookies the middleware can read
+- After login, must use `window.location.href` (not `router.push`) to force full page reload so middleware can pick up the session cookie
+- Test user: `test@louisville.edu` / `Test1234!` — profile row exists in `profiles` table with role: student
+- Next admin test user should be created with role: admin to test admin redirect
+- All pages require `'use client'` at the top (first line, before all imports) since they use event handlers
+
+---
+
+## Key File Contents
+
+### `lib/supabase.ts`
+```typescript
+import { createBrowserClient } from '@supabase/ssr'
+
+export const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+```
+
+### `lib/signout.ts`
+```typescript
+import { supabase } from './supabase'
+export async function signOut() {
+  await supabase.auth.signOut()
+  window.location.href = '/login'
+}
+```
+
+### Sign Out button pattern (used on all pages)
+```typescript
+<button onClick={signOut} className="flex items-center gap-3 p-2 text-zinc-500 hover:text-red-800 transition-colors text-sm w-full">
+  <span className="material-symbols-outlined text-lg">logout</span> Sign Out
+</button>
+```
+
+---
+
+## Navigation Link Map (for wiring href="#" placeholders)
+
+### Student pages
+| From page | Link label | href |
+|-----------|-----------|------|
+| All student pages | Dashboard | `/dashboard` |
+| All student pages | Materials / My Files | `/uploads` |
+| All student pages | Portfolio | `/portfolio` |
+| All student pages | Curriculum / Timeline | `/curriculum` |
+| All student pages | Access / Sharing | `/sharing` |
+
+### Admin pages
+| From page | Link label | href |
+|-----------|-----------|------|
+| Admin pages | Submissions | `/admin/submissions` |
+| Admin pages | Review (per student) | `/admin/review` |
 
 ---
 
@@ -121,19 +223,19 @@ Storage remains well within Supabase Pro 100GB limit for the foreseeable future.
 ### Phase 1 — Foundation
 - Hosting setup (university IT conversation or Vercel/Supabase)
 - Database schema design
-- Email/password authentication
-- Student and admin role setup
+- Email/password authentication ✅
+- Student and admin role setup ✅
 
 ### Phase 2 — Student Experience
-- Student Dashboard
-- Curriculum Submission Monitor (11 milestones + status badges)
-- Course-Based Uploads (file drop-zones + Panopto link field)
-- Portfolio Preview (with embedded Panopto video player)
-- Sharing & Permissions (secure links for external reviewers)
+- Student Dashboard ✅
+- Curriculum Submission Monitor (11 milestones + status badges) ✅
+- Course-Based Uploads (file drop-zones + Panopto link field) ✅
+- Portfolio Preview (with embedded Panopto video player) ✅
+- Sharing & Permissions (secure links for external reviewers) ✅
 
 ### Phase 3 — Admin Console
-- Submission Management Console (sortable list, status filters, volume analytics)
-- Submission Review Detail (read-only PDF viewer, rubric checklist, approval/revision controls)
+- Submission Management Console (sortable list, status filters, volume analytics) ✅
+- Submission Review Detail (read-only PDF viewer, rubric checklist, approval/revision controls) ✅
 
 ### Phase 4 — Testing & Launch
 - Pilot with small student group and one or two faculty reviewers
@@ -142,8 +244,6 @@ Storage remains well within Supabase Pro 100GB limit for the foreseeable future.
 
 ### Key Dependency
 University IT conversation should happen before or during Phase 1 to determine hosting path.
-
----
 
 ---
 
