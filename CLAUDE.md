@@ -36,7 +36,7 @@ Screens for faculty and staff to monitor and review submissions.
 - **Milestones** — Deliverables tied to specific MBA courses that students upload for review
 - **11 core course requirements** — The fixed set of milestones every student must complete
 - **Track-specific deliverable** — A final submission that varies by the student's MBA concentration
-- **Submission statuses:** `Approved`, `In Review`, `Locked`
+- **Submission statuses (database values):** `approved`, `in_review`, `locked` (lowercase with underscores — enforced by DB check constraint)
 - **~120+ students** submit annually
 
 ---
@@ -128,43 +128,110 @@ All screens were pre-designed as HTML prototypes (.txt files) and have been conv
 
 ---
 
+## Database Schema
+
+### Tables
+| Table | Key Columns |
+|-------|------------|
+| `profiles` | id, email, full_name, role, mba_track, is_active, created_at |
+| `courses` | id, code, name, sort_order |
+| `milestones` | id, course_id, title, description, is_core, allows_panopto, sort_order |
+| `submissions` | id, student_id, milestone_id, status, file_url, file_name, file_type, panopto_embed_code, reviewer_notes, submitted_at, reviewed_at, reviewed_by, created_at, updated_at |
+| `portfolio_items` | (columns not yet confirmed) |
+| `sharing_links` | (columns not yet confirmed) |
+| `access_codes` | (columns not yet confirmed) |
+
+### Submission Status Values (DB constraint)
+Must be exactly: `approved`, `in_review`, `locked` (lowercase, underscores)
+
+### RLS Policies in Place
+- `profiles`: Users can read own profile; Authenticated users can read all profiles
+- `submissions`: Admins can read all submissions
+- `milestones`: Authenticated users can read milestones
+- `courses`: Authenticated users can read courses
+
+### Test Data
+- Test student: `test@louisville.edu` / `Test1234!` (role: student, full_name: Alex Chen, id: `07aa6746-8dfa-4068-b39e-5b691c5a02ab`)
+- Test admin: `admin@louisville.edu` / `Admin1234!` (role: admin)
+- 11 courses (MBA 625–MBA 668) inserted
+- 11 milestones inserted (one per course)
+- 11 test submissions inserted for Alex Chen (8 approved, 1 in_review, 2 locked)
+
+---
+
 ## Build Progress
 
-### Phase 1 Status (as of 2026-03-27)
+### Phase 1 Status (as of 2026-03-30)
 - [x] Supabase project created
 - [x] Database schema deployed
 - [x] Next.js project created locally
 - [x] Supabase client connected via `.env.local` — uses `createBrowserClient` from `@supabase/ssr`
-- [x] Login page built — `app/login/page.tsx` (styled, connected to Supabase auth)
-- [x] Student Dashboard built — `app/dashboard/page.tsx`
-- [x] Admin Submissions Console built — `app/admin/submissions/page.tsx`
-- [x] Admin Submission Review Detail built — `app/admin/review/page.tsx`
-- [x] Curriculum Submission Monitor built — `app/curriculum/page.tsx`
-- [x] Course-Based Uploads built — `app/uploads/page.tsx`
-- [x] Portfolio Preview built — `app/portfolio/page.tsx`
-- [x] Sharing & Permissions built — `app/sharing/page.tsx`
-- [x] Middleware created — `middleware.ts` in root (protects all pages, redirects unauthenticated users to `/login`)
-- [x] `@supabase/ssr` package installed
-- [x] Login page uses `window.location.href` (not `router.push`) for post-login redirect so middleware can pick up session cookie
+- [x] Login page built and working — `app/login/page.tsx`
+- [x] All 7 pages built
+- [x] Middleware created — protects all pages, redirects unauthenticated users to `/login`
 - [x] Role-based redirect working — students → `/dashboard`, admins → `/admin/submissions`
-- [x] Sign Out wired up on ALL pages using `lib/signout.ts`
-- [x] All pages have `'use client'` directive and `import { signOut } from '@/lib/signout'`
-- [x] Test user exists in Supabase: `test@louisville.edu` / `Test1234!` (role: student)
-- [x] RLS policy added to profiles table so users can read their own profile
-- [x] Navigation links partially wired — dashboard top nav done (Materials → `/uploads`, Portfolio → `/portfolio`)
-- [ ] **Next step: Finish wiring navigation links on `app/dashboard/page.tsx`** — left sidebar and mobile nav still have `href="#"` placeholders; user was mid-way through this when session ended
-- [ ] Wire navigation links on remaining pages: `curriculum`, `uploads`, `portfolio`, `sharing`, `admin/submissions`, `admin/review`
-- [ ] Create admin test user in Supabase (role: admin) to test admin redirect
-- [ ] Connect pages to live Supabase data
-- [ ] Wire up remaining navigation links between pages
+- [x] Sign Out wired up on ALL pages
+- [x] Navigation links wired on ALL pages
+- [x] Admin Submissions Console connected to live Supabase data ✅
+- [x] Student Dashboard — partially connected to live Supabase data (mid-step when session ended)
+- [ ] **NEXT STEP: Finish connecting Student Dashboard to live data** — was mid-way through updating milestone card section. Need to apply these remaining changes to `app/dashboard/page.tsx`:
+
+  **1. Badge className — update status checks:**
+  Find:
+  ```
+  ${m.status === "Approved" ? "bg-green-50 text-green-700" : ""}
+  ${m.status === "In Review" ? "bg-amber-50 text-amber-700" : ""}
+  ${m.status === "In Progress" ? "bg-zinc-100 text-zinc-500" : ""}
+  ${m.status === "Locked" ? "bg-zinc-200 text-zinc-500" : ""}
+  ```
+  Replace with:
+  ```
+  ${m.status === "approved" ? "bg-green-50 text-green-700" : ""}
+  ${m.status === "in_review" ? "bg-amber-50 text-amber-700" : ""}
+  ${m.status === "locked" ? "bg-zinc-200 text-zinc-500" : ""}
+  ```
+
+  **2. Badge icon — update status checks:**
+  Find:
+  ```
+  {m.status === "Approved" ? "check_circle" : m.status === "In Review" ? "schedule" : m.status === "In Progress" ? "edit_note" : "lock"}
+  ```
+  Replace with:
+  ```
+  {m.status === "approved" ? "check_circle" : m.status === "in_review" ? "schedule" : "lock"}
+  ```
+
+  **3. Course code — replace hardcoded field:**
+  Find:
+  ```
+  <p className="text-xs font-bold font-headline mb-0.5">{m.code}</p>
+  <p className="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter leading-tight">{m.name}</p>
+  ```
+  Replace with:
+  ```
+  <p className="text-xs font-bold font-headline mb-0.5">{m.milestone?.course?.code}</p>
+  <p className="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter leading-tight">{m.milestone?.title}</p>
+  ```
+
+  **4. Submission date — replace hardcoded field:**
+  Find:
+  ```
+  <p className="text-[8px] text-zinc-400 font-bold uppercase text-center">{m.date}</p>
+  ```
+  Replace with:
+  ```
+  <p className="text-[8px] text-zinc-400 font-bold uppercase text-center">{m.submitted_at ? new Date(m.submitted_at).toLocaleDateString() : '—'}</p>
+  ```
+
+- [ ] Connect Curriculum Submission Monitor to live data (`app/curriculum/page.tsx`)
+- [ ] Connect Admin Review Detail to live data (`app/admin/review/page.tsx`)
+- [ ] Connect remaining pages to live data (uploads, portfolio, sharing)
 
 ---
 
 ## Authentication Notes
 - Middleware uses `@supabase/ssr` — `lib/supabase.ts` also uses `createBrowserClient` from `@supabase/ssr` (NOT `createClient` from `@supabase/supabase-js`) so sessions are stored in cookies the middleware can read
 - After login, must use `window.location.href` (not `router.push`) to force full page reload so middleware can pick up the session cookie
-- Test user: `test@louisville.edu` / `Test1234!` — profile row exists in `profiles` table with role: student
-- Next admin test user should be created with role: admin to test admin redirect
 - All pages require `'use client'` at the top (first line, before all imports) since they use event handlers
 
 ---
@@ -197,9 +264,59 @@ export async function signOut() {
 </button>
 ```
 
+### Dashboard data fetching pattern (top of `app/dashboard/page.tsx`)
+```typescript
+'use client'
+
+import { useState, useEffect } from 'react'
+import { signOut } from '@/lib/signout'
+import { supabase } from '@/lib/supabase'
+
+export default function DashboardPage() {
+  const [profile, setProfile] = useState<{ full_name: string; mba_track: string } | null>(null)
+  const [submissions, setSubmissions] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchData() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('full_name, mba_track')
+        .eq('id', user.id)
+        .single()
+
+      const { data: submissionsData } = await supabase
+        .from('submissions')
+        .select(`
+          id, status, submitted_at,
+          milestone:milestones!milestone_id(
+            title,
+            course:courses!course_id(code)
+          )
+        `)
+        .eq('student_id', user.id)
+        .order('submitted_at', { ascending: false })
+
+      if (profileData) setProfile(profileData)
+      if (submissionsData) setSubmissions(submissionsData)
+      setLoading(false)
+    }
+    fetchData()
+  }, [])
+
+  const firstName = profile?.full_name?.split(' ')[0] ?? 'there'
+  const initials = profile?.full_name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) ?? '?'
+  const approved = submissions.filter(s => s.status === 'approved').length
+
+  return (
+```
+
 ---
 
-## Navigation Link Map (for wiring href="#" placeholders)
+## Navigation Link Map
 
 ### Student pages
 | From page | Link label | href |
@@ -213,37 +330,17 @@ export async function signOut() {
 ### Admin pages
 | From page | Link label | href |
 |-----------|-----------|------|
+| Admin pages | Dashboard | `/dashboard` |
 | Admin pages | Submissions | `/admin/submissions` |
-| Admin pages | Review (per student) | `/admin/review` |
 
 ---
 
 ## Build Phases
 
-### Phase 1 — Foundation
-- Hosting setup (university IT conversation or Vercel/Supabase)
-- Database schema design
-- Email/password authentication ✅
-- Student and admin role setup ✅
-
-### Phase 2 — Student Experience
-- Student Dashboard ✅
-- Curriculum Submission Monitor (11 milestones + status badges) ✅
-- Course-Based Uploads (file drop-zones + Panopto link field) ✅
-- Portfolio Preview (with embedded Panopto video player) ✅
-- Sharing & Permissions (secure links for external reviewers) ✅
-
-### Phase 3 — Admin Console
-- Submission Management Console (sortable list, status filters, volume analytics) ✅
-- Submission Review Detail (read-only PDF viewer, rubric checklist, approval/revision controls) ✅
-
-### Phase 4 — Testing & Launch
-- Pilot with small student group and one or two faculty reviewers
-- Bug fixes and refinements
-- Full rollout
-
-### Key Dependency
-University IT conversation should happen before or during Phase 1 to determine hosting path.
+### Phase 1 — Foundation ✅
+### Phase 2 — Student Experience ✅ (pages built, data connection in progress)
+### Phase 3 — Admin Console ✅ (pages built, submissions console connected to live data)
+### Phase 4 — Testing & Launch (pending)
 
 ---
 
