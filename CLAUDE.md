@@ -146,7 +146,7 @@ Must be exactly: `approved`, `in_review`, `locked` (lowercase, underscores)
 
 ### RLS Policies in Place
 - `profiles`: Users can read own profile; Authenticated users can read all profiles
-- `submissions`: Admins can read all submissions
+- `submissions`: Admins can read all submissions; students need a policy added to read their own
 - `milestones`: Authenticated users can read milestones
 - `courses`: Authenticated users can read courses
 
@@ -161,7 +161,7 @@ Must be exactly: `approved`, `in_review`, `locked` (lowercase, underscores)
 
 ## Build Progress
 
-### Phase 1 Status (as of 2026-03-30)
+### Phase 1 Status (as of 2026-03-31)
 - [x] Supabase project created
 - [x] Database schema deployed
 - [x] Next.js project created locally
@@ -172,60 +172,36 @@ Must be exactly: `approved`, `in_review`, `locked` (lowercase, underscores)
 - [x] Role-based redirect working — students → `/dashboard`, admins → `/admin/submissions`
 - [x] Sign Out wired up on ALL pages
 - [x] Navigation links wired on ALL pages
+- [x] Student Dashboard connected to live Supabase data ✅
+- [x] Curriculum Submission Monitor connected to live Supabase data ✅
 - [x] Admin Submissions Console connected to live Supabase data ✅
-- [x] Student Dashboard — partially connected to live Supabase data (mid-step when session ended)
-- [ ] **NEXT STEP: Finish connecting Student Dashboard to live data** — was mid-way through updating milestone card section. Need to apply these remaining changes to `app/dashboard/page.tsx`:
+- [x] Admin Review Detail connected to live Supabase data ✅ (loads via ?id= URL param from View Details button)
+- [x] App deployed to Vercel for demo purposes (see Vercel Deployment section below)
+- [ ] Add RLS policy so students can read their own submissions (needed for dashboard/curriculum data to load correctly for real students)
+- [ ] Connect remaining pages to live data: uploads, portfolio, sharing
+- [ ] File upload functionality (blocked on university IT hosting decision)
+- [ ] Panopto embed code submission
+- [ ] Account creation / access code flow for new students
 
-  **1. Badge className — update status checks:**
-  Find:
-  ```
-  ${m.status === "Approved" ? "bg-green-50 text-green-700" : ""}
-  ${m.status === "In Review" ? "bg-amber-50 text-amber-700" : ""}
-  ${m.status === "In Progress" ? "bg-zinc-100 text-zinc-500" : ""}
-  ${m.status === "Locked" ? "bg-zinc-200 text-zinc-500" : ""}
-  ```
-  Replace with:
-  ```
-  ${m.status === "approved" ? "bg-green-50 text-green-700" : ""}
-  ${m.status === "in_review" ? "bg-amber-50 text-amber-700" : ""}
-  ${m.status === "locked" ? "bg-zinc-200 text-zinc-500" : ""}
-  ```
+---
 
-  **2. Badge icon — update status checks:**
-  Find:
-  ```
-  {m.status === "Approved" ? "check_circle" : m.status === "In Review" ? "schedule" : m.status === "In Progress" ? "edit_note" : "lock"}
-  ```
-  Replace with:
-  ```
-  {m.status === "approved" ? "check_circle" : m.status === "in_review" ? "schedule" : "lock"}
-  ```
+## Vercel Deployment (for demos)
 
-  **3. Course code — replace hardcoded field:**
-  Find:
-  ```
-  <p className="text-xs font-bold font-headline mb-0.5">{m.code}</p>
-  <p className="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter leading-tight">{m.name}</p>
-  ```
-  Replace with:
-  ```
-  <p className="text-xs font-bold font-headline mb-0.5">{m.milestone?.course?.code}</p>
-  <p className="text-[9px] text-zinc-400 font-medium uppercase tracking-tighter leading-tight">{m.milestone?.title}</p>
-  ```
+To show the app without running it locally, deploy to Vercel:
 
-  **4. Submission date — replace hardcoded field:**
-  Find:
-  ```
-  <p className="text-[8px] text-zinc-400 font-bold uppercase text-center">{m.date}</p>
-  ```
-  Replace with:
-  ```
-  <p className="text-[8px] text-zinc-400 font-bold uppercase text-center">{m.submitted_at ? new Date(m.submitted_at).toLocaleDateString() : '—'}</p>
-  ```
+1. Go to vercel.com and sign in with GitHub
+2. Click **Add New Project** → import `mwelde01/Cardinal-Choice`
+3. Add environment variables:
+   - `NEXT_PUBLIC_SUPABASE_URL` — copy from `.env.local`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` — copy from `.env.local`
+4. Click **Deploy**
+5. Share the generated URL (e.g. `cardinal-choice.vercel.app`)
 
-- [ ] Connect Curriculum Submission Monitor to live data (`app/curriculum/page.tsx`)
-- [ ] Connect Admin Review Detail to live data (`app/admin/review/page.tsx`)
-- [ ] Connect remaining pages to live data (uploads, portfolio, sharing)
+**Demo credentials:**
+- Student: `test@louisville.edu` / `Test1234!`
+- Admin: `admin@louisville.edu` / `Admin1234!`
+
+Note: Vercel free tier is fine for demos. Only upgrade to Pro if going to production.
 
 ---
 
@@ -257,63 +233,6 @@ export async function signOut() {
 }
 ```
 
-### Sign Out button pattern (used on all pages)
-```typescript
-<button onClick={signOut} className="flex items-center gap-3 p-2 text-zinc-500 hover:text-red-800 transition-colors text-sm w-full">
-  <span className="material-symbols-outlined text-lg">logout</span> Sign Out
-</button>
-```
-
-### Dashboard data fetching pattern (top of `app/dashboard/page.tsx`)
-```typescript
-'use client'
-
-import { useState, useEffect } from 'react'
-import { signOut } from '@/lib/signout'
-import { supabase } from '@/lib/supabase'
-
-export default function DashboardPage() {
-  const [profile, setProfile] = useState<{ full_name: string; mba_track: string } | null>(null)
-  const [submissions, setSubmissions] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function fetchData() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
-
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('full_name, mba_track')
-        .eq('id', user.id)
-        .single()
-
-      const { data: submissionsData } = await supabase
-        .from('submissions')
-        .select(`
-          id, status, submitted_at,
-          milestone:milestones!milestone_id(
-            title,
-            course:courses!course_id(code)
-          )
-        `)
-        .eq('student_id', user.id)
-        .order('submitted_at', { ascending: false })
-
-      if (profileData) setProfile(profileData)
-      if (submissionsData) setSubmissions(submissionsData)
-      setLoading(false)
-    }
-    fetchData()
-  }, [])
-
-  const firstName = profile?.full_name?.split(' ')[0] ?? 'there'
-  const initials = profile?.full_name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) ?? '?'
-  const approved = submissions.filter(s => s.status === 'approved').length
-
-  return (
-```
-
 ---
 
 ## Navigation Link Map
@@ -332,14 +251,15 @@ export default function DashboardPage() {
 |-----------|-----------|------|
 | Admin pages | Dashboard | `/dashboard` |
 | Admin pages | Submissions | `/admin/submissions` |
+| Submissions console | View Details | `/admin/review?id={submission_id}` |
 
 ---
 
 ## Build Phases
 
 ### Phase 1 — Foundation ✅
-### Phase 2 — Student Experience ✅ (pages built, data connection in progress)
-### Phase 3 — Admin Console ✅ (pages built, submissions console connected to live data)
+### Phase 2 — Student Experience ✅ (pages built, dashboard + curriculum connected to live data)
+### Phase 3 — Admin Console ✅ (fully connected to live data)
 ### Phase 4 — Testing & Launch (pending)
 
 ---
