@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { signOut } from '@/lib/signout'
@@ -38,7 +40,6 @@ function SubmissionReviewContent() {
   }, [submissionId])
 
   return (
-
     <>
       {/* Top Navigation */}
       <header className="fixed top-0 w-full flex justify-between items-center px-8 h-16 bg-white/60 backdrop-blur-md z-50 shadow-[0_40px_40px_-10px_rgba(27,27,27,0.04)]">
