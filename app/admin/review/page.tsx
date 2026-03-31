@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { signOut } from '@/lib/signout'
 import { supabase } from '@/lib/supabase'
@@ -115,7 +115,7 @@ function SubmissionReviewContent() {
                 <span className="material-symbols-outlined text-[14px]">chevron_right</span>
                 <span className="text-zinc-400">Reviewing Submission</span>
               </nav>
-            <h1 className="text-4xl font-extrabold tracking-tight font-headline text-zinc-900 mb-2">{submission?.student?.full_name ?? 'Loading...'}</h1>
+              <h1 className="text-4xl font-extrabold tracking-tight font-headline text-zinc-900 mb-2">{submission?.student?.full_name ?? 'Loading...'}</h1>
               <div className="flex items-center gap-4 flex-wrap">
                 <span className="bg-primary-fixed text-on-primary-fixed px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase">
                   {submission?.milestone?.course?.code} {submission?.milestone?.course?.name}
@@ -142,7 +142,7 @@ function SubmissionReviewContent() {
           <div className="w-2/3 flex flex-col gap-6">
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-bold font-headline text-zinc-900">Submission Document</h3>
-           <button className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-800 transition-colors">
+              <button className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-800 transition-colors">
                 <span className="material-symbols-outlined">open_in_full</span> Open full view
               </button>
             </div>
@@ -269,7 +269,7 @@ function SubmissionReviewContent() {
             <div className="px-2">
               <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-4">File Details</p>
               <div className="flex flex-wrap gap-2">
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-primary-fixed rounded-full">GOS0SlAws8rL$d3xnm2g
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-primary-fixed rounded-full">
                   <span className="material-symbols-outlined text-[16px] text-on-primary-fixed">description</span>
                   <span className="text-[11px] font-bold text-on-primary-fixed uppercase tracking-tight">PDF Document</span>
                 </div>
