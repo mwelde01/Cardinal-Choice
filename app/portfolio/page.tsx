@@ -1,6 +1,8 @@
-'use client'
+''use client'
 
+import { useState, useEffect } from 'react'
 import { signOut } from '@/lib/signout'
+import { supabase } from '@/lib/supabase'
 
 const milestones = [
   { code: "MBA 625", title: "Managerial Economics & Strategy", description: "Comparative analysis of pricing strategies in competitive markets.", fileType: "PDF", fileIcon: "picture_as_pdf" },
@@ -17,6 +19,26 @@ const milestones = [
 ]
 
 export default function PortfolioPage() {
+  const [profile, setProfile] = useState<{ full_name: string; mba_track: string } | null>(null)
+
+  useEffect(() => {
+    async function fetchProfile() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data } = await supabase
+        .from('profiles')
+        .select('full_name, mba_track')
+        .eq('id', user.id)
+        .single()
+      if (data) setProfile(data)
+    }
+    fetchProfile()
+  }, [])
+
+  const firstName = profile?.full_name?.split(' ')[0] ?? 'Julian'
+  const lastName = profile?.full_name?.split(' ')[1] ?? 'Vance'
+  const fullName = profile?.full_name ?? 'Julian Vance'
+
   return (
     <>
       {/* Top Navigation */}
@@ -81,7 +103,7 @@ export default function PortfolioPage() {
                 <span className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Class of 2024</span>
               </div>
               <h1 className="font-headline text-5xl md:text-7xl font-extrabold tracking-tighter text-on-background mb-6 leading-none">
-                Julian <span className="text-primary">Vance</span>
+              {firstName} <span className="text-primary">{lastName}</span>
               </h1>
               <p className="text-zinc-600 leading-relaxed text-lg max-w-2xl mb-8">
                 An MBA candidate specializing in operational excellence and organizational strategy. This portfolio documents my progression through the Cardinal Choice curriculum, culminating in a data-driven Industry White Paper on sustainable supply chain frameworks.
@@ -172,14 +194,14 @@ export default function PortfolioPage() {
           {/* Share & Verification */}
           <section className="bg-white rounded-[3rem] p-12 border border-outline shadow-lg relative overflow-hidden">
             <div className="absolute top-0 right-0 p-8">
-              <span className="text-primary/10 font-black text-8xl leading-none">Vance</span>
+              <span className="text-primary/10 font-black text-8xl leading-none">{lastName}</span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center relative z-10">
               <div>
                 <h2 className="font-headline text-3xl font-black mb-4">Official Portfolio Link</h2>
                 <p className="text-zinc-500 text-sm mb-8 font-medium">This verified link is formatted for professional sharing with faculty and hiring managers.</p>
                 <div className="flex items-center bg-zinc-50 border border-outline rounded-2xl p-2 pl-6">
-                  <span className="text-zinc-400 text-sm truncate flex-1 font-semibold">cardinalchoice.edu/p/vance-julian-2024</span>
+                  <span className="text-zinc-400 text-sm truncate flex-1 font-semibold">{`cardinalchoice.edu/p/${lastName.toLowerCase()}-${firstName.toLowerCase()}-2024`}
                   <button className="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 rounded-xl font-bold text-sm shadow-sm hover:opacity-90 transition-all">Copy Link</button>
                 </div>
               </div>
