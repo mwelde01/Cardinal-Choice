@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { signOut } from '@/lib/signout'
 import { supabase } from '@/lib/supabase'
 
-export default function SubmissionReviewPage() {
+function SubmissionReviewContent() {
   const searchParams = useSearchParams()
   const submissionId = searchParams.get('id')
 
@@ -283,5 +283,13 @@ export default function SubmissionReviewPage() {
         </section>
       </main>
     </>
+  )
+}
+
+export default function SubmissionReviewPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-zinc-400">Loading...</div>}>
+      <SubmissionReviewContent />
+    </Suspense>
   )
 }
