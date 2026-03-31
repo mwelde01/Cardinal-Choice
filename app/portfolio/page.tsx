@@ -37,7 +37,6 @@ export default function PortfolioPage() {
 
   const firstName = profile?.full_name?.split(' ')[0] ?? 'Julian'
   const lastName = profile?.full_name?.split(' ')[1] ?? 'Vance'
-  const fullName = profile?.full_name ?? 'Julian Vance'
 
   return (
     <>
@@ -84,9 +83,9 @@ export default function PortfolioPage() {
           <button className="bg-gradient-to-br from-primary to-primary-container text-white py-3 px-4 rounded-xl text-sm font-bold mb-4 shadow-lg hover:opacity-90 transition-opacity">
             Submit for Review
           </button>
-         <button onClick={signOut} className="flex items-center gap-3 px-3 py-2 text-zinc-600 hover:bg-zinc-100 transition-all text-sm font-medium rounded-lg w-full">
- 	 <span className="material-symbols-outlined">logout</span> Sign Out
-	</button>
+          <button onClick={signOut} className="flex items-center gap-3 px-3 py-2 text-zinc-600 hover:bg-zinc-100 transition-all text-sm font-medium rounded-lg w-full">
+            <span className="material-symbols-outlined">logout</span> Sign Out
+          </button>
         </div>
       </aside>
 
@@ -103,7 +102,7 @@ export default function PortfolioPage() {
                 <span className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Class of 2024</span>
               </div>
               <h1 className="font-headline text-5xl md:text-7xl font-extrabold tracking-tighter text-on-background mb-6 leading-none">
-              {firstName} <span className="text-primary">{lastName}</span>
+                {firstName} <span className="text-primary">{lastName}</span>
               </h1>
               <p className="text-zinc-600 leading-relaxed text-lg max-w-2xl mb-8">
                 An MBA candidate specializing in operational excellence and organizational strategy. This portfolio documents my progression through the Cardinal Choice curriculum, culminating in a data-driven Industry White Paper on sustainable supply chain frameworks.
@@ -119,7 +118,9 @@ export default function PortfolioPage() {
             </div>
             <div className="lg:col-span-4 relative">
               <div className="aspect-square bg-zinc-100 rounded-[2rem] overflow-hidden border-8 border-white shadow-2xl relative z-10 flex items-center justify-center">
-                <span className="font-headline font-black text-8xl text-zinc-300">JV</span>
+                <span className="font-headline font-black text-8xl text-zinc-300">
+                  {firstName.charAt(0)}{lastName.charAt(0)}
+                </span>
               </div>
               <div className="absolute -bottom-6 -right-6 h-32 w-32 bg-[#FEBE10] rounded-full flex flex-col items-center justify-center shadow-xl z-20 border-4 border-white">
                 <span className="font-headline font-black text-3xl text-[#261900]">100%</span>
@@ -201,7 +202,7 @@ export default function PortfolioPage() {
                 <h2 className="font-headline text-3xl font-black mb-4">Official Portfolio Link</h2>
                 <p className="text-zinc-500 text-sm mb-8 font-medium">This verified link is formatted for professional sharing with faculty and hiring managers.</p>
                 <div className="flex items-center bg-zinc-50 border border-outline rounded-2xl p-2 pl-6">
-                  <span className="text-zinc-400 text-sm truncate flex-1 font-semibold">{`cardinalchoice.edu/p/${lastName.toLowerCase()}-${firstName.toLowerCase()}-2024`}
+                  <span className="text-zinc-400 text-sm truncate flex-1 font-semibold">{`cardinalchoice.edu/p/${lastName.toLowerCase()}-${firstName.toLowerCase()}-2024`}</span>
                   <button className="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 rounded-xl font-bold text-sm shadow-sm hover:opacity-90 transition-all">Copy Link</button>
                 </div>
               </div>
