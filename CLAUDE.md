@@ -129,9 +129,9 @@ All screens were pre-designed as HTML prototypes (.txt files) and are being conv
 
 ## Build Progress
 
-### Phase 1 Status (as of 2026-03-25)
+### Phase 1 & 2 Status (as of 2026-03-31)
 - [x] Supabase project created
-- [x] Database schema deployed — SQL ran successfully in Supabase SQL Editor ("no rows returned" is expected/correct behavior for DDL statements)
+- [x] Database schema deployed
 - [x] Next.js project created locally
 - [x] Supabase client connected via `.env.local`
 - [x] Login page built — `app/login/page.tsx` (styled, connected to Supabase auth)
@@ -144,20 +144,38 @@ All screens were pre-designed as HTML prototypes (.txt files) and are being conv
 - [x] Sharing & Permissions built — `app/sharing/page.tsx`
 - [x] Middleware created — `middleware.ts` in root (protects all pages, redirects unauthenticated users to `/login`)
 - [x] `@supabase/ssr` package installed
-- [x] Login page updated to redirect students → `/dashboard`, admins → `/admin/submissions` based on role in profiles table
-- [x] Sign Out button wired up on dashboard — uses `lib/signout.ts`
-- [x] Test user created in Supabase: `test@louisville.edu` / `Test1234!` (role: student)
-- [x] RLS policy added to profiles table so users can read their own profile
-- [ ] **Next step: Fix post-login redirect** — `router.push` not triggering full page reload after login; need to replace with `window.location.href` in `app/login/page.tsx` (was mid-step when session ended)
-- [ ] After auth fixed: wire up Sign Out on remaining pages (curriculum, uploads, portfolio, sharing, admin pages)
-- [ ] Connect pages to live Supabase data
-- [ ] Wire up navigation links between pages
+- [x] Post-login redirect fixed — uses `window.location.href` (not `router.push`) so middleware reads session cookie
+- [x] Supabase client switched to `createBrowserClient` from `@supabase/ssr` (stores session in cookies, not localStorage)
+- [x] Sign Out wired up on all 7 pages via `lib/signout.ts`
+- [x] Navigation links wired across all pages
+- [x] Test student created: `test@louisville.edu` / `Test1234!` (role: student, name: Alex Chen)
+- [x] Test admin created: `admin@louisville.edu` (role: admin) — redirects to `/admin/submissions`
+- [x] Test data seeded: courses, milestones, submissions in Supabase
+- [x] RLS policies in place: profiles readable by owner + all authenticated users; submissions readable by admins
+- [x] Student Dashboard connected to live Supabase data (profile name, submission list, status counts)
+- [x] Curriculum Submission Monitor connected to live data (submissions with milestone/course joins)
+- [x] Admin Submissions Console connected to live data (all submissions with student name, track, course, milestone)
+- [x] Admin Review Detail connected to live data (single submission by URL param `?id=`)
+- [x] Portfolio page shows logged-in student's name dynamically (not hardcoded placeholder)
+- [x] Deployed to Vercel — auto-deploys on push to `master` branch
+- [x] Admin Review Detail fixed for Vercel — `useSearchParams()` wrapped in `<Suspense>` + `export const dynamic = 'force-dynamic'`
+
+### Pending — Next Session
+- [ ] Connect `app/uploads/page.tsx` to live Supabase data (show existing submissions per course)
+- [ ] Connect `app/sharing/page.tsx` to live data
+- [ ] **File upload functionality** — blocked on university IT hosting decision (university server vs. Supabase Storage); once decided, wire drop-zones to actually upload files and create submission records
+- [ ] Add RLS policy so students can read only their own submissions (currently only admin RLS is in place for submissions table)
+- [ ] Account creation / access code flow for new students (admin creates account → student gets one-time code → sets password)
+- [ ] Panopto embed code submission on uploads page
+- [ ] Sync local VS Code files with GitHub — `app/admin/review/page.tsx` and `app/portfolio/page.tsx` were fixed directly via GitHub MCP and may differ from local copies
 
 ## Authentication Notes
 - Middleware uses `@supabase/ssr` — different from client-side `@supabase/supabase-js` in `lib/supabase.ts`
 - After login, must use `window.location.href` (not `router.push`) to force full page reload so middleware can pick up the session cookie
-- Test user: `test@louisville.edu` / `Test1234!` — profile row exists in `profiles` table with role: student
-- Next admin test user should be created with role: admin to test admin redirect
+- `lib/supabase.ts` uses `createBrowserClient` from `@supabase/ssr` — stores session in cookies for middleware compatibility
+- Test student: `test@louisville.edu` / `Test1234!` — profile row: name "Alex Chen", role: student
+- Test admin: `admin@louisville.edu` — role: admin, redirects to `/admin/submissions`
+- Submission statuses in DB must be lowercase with underscores: `approved`, `in_review`, `locked`
 
 ---
 
