@@ -1,26 +1,74 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-primary: #810000;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #ad0000;
+  --color-on-primary-container: #ffb7ac;
+  --color-primary-fixed: #ffdad4;
+  --color-primary-fixed-dim: #ffb4a8;
+  --color-on-primary-fixed: #410000;
+  --color-on-primary-fixed-variant: #930000;
+  --color-inverse-primary: #ffb4a8;
+  --color-secondary: #a43b2d;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #fd7d6b;
+  --color-on-secondary-container: #71160d;
+  --color-secondary-fixed: #ffdad4;
+  --color-secondary-fixed-dim: #ffb4a8;
+  --color-on-secondary-fixed: #410000;
+  --color-on-secondary-fixed-variant: #842419;
+  --color-tertiary: #503900;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #6d4f00;
+  --color-on-tertiary-container: #febe10;
+  --color-tertiary-fixed: #ffdea1;
+  --color-tertiary-fixed-dim: #fcbc0b;
+  --color-on-tertiary-fixed: #261900;
+  --color-on-tertiary-fixed-variant: #5c4300;
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  --color-surface: #f9f9f9;
+  --color-on-surface: #1b1b1b;
+  --color-surface-variant: #e2e2e2;
+  --color-on-surface-variant: #5c403b;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f3f3;
+  --color-surface-container: #eeeeee;
+  --color-surface-container-high: #e8e8e8;
+  --color-surface-container-highest: #e2e2e2;
+  --color-surface-bright: #f9f9f9;
+  --color-surface-dim: #dadada;
+  --color-surface-tint: #bc130a;
+  --color-inverse-surface: #303030;
+  --color-inverse-on-surface: #f1f1f1;
+  --color-outline: #916f6a;
+  --color-outline-variant: #e5bdb7;
+  --color-on-background: #1b1b1b;
+
+  --font-headline: "Manrope", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Inter", sans-serif;
+
+  --radius: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+  --radius-full: 0.75rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.signature-gradient {
+  background: linear-gradient(135deg, #810000 0%, #ad0000 100%);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.ghost-shadow {
+  box-shadow: 0 40px 40px -10px rgba(27, 27, 27, 0.04);
 }
+
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
