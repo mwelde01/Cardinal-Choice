@@ -225,3 +225,4 @@ claude/<description>-<SESSION_ID>
 Example: `claude/add-upload-endpoint-QJGwn`
 
 Push with: `git push -u origin <branch-name>`
+
