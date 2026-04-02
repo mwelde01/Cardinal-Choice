@@ -281,3 +281,96 @@ claude/<description>-<SESSION_ID>
 Example: `claude/add-upload-endpoint-QJGwn`
 
 Push with: `git push -u origin <branch-name>`
+
+---
+
+## Session Behavior Rules (IMPORTANT)
+
+- **Do NOT retry push operations repeatedly.** If a push fails or uses significant session context, stop and report the status to the user instead of retrying.
+- **Do NOT attempt large multi-file operations near session limits.** If context is running low, stop, document what remains, and ask the user to start a new session.
+- **When a push partially completes and breaks the site**, immediately note which files were pushed and which were not — do not attempt further pushes.
+
+---
+
+## WCAG / ADA Accessibility Work
+
+### Status (as of 2026-04-02)
+A full WCAG 2.1 AA audit was completed. An attempt was made to push fixes on branch `claude/add-accessibility-compliance-1I7qf`. The push was **partially completed and broke the site**. The branch should be **reverted to the last working state** before applying fixes again.
+
+### What Was Pushed (may be broken — revert before using)
+- `app/layout.tsx` — added skip-nav link and per-page title support
+- `app/login/page.tsx` — form label/input id fixes, error alert role, autocomplete
+- `app/dashboard/page.tsx` — skip-nav target, aria-labels, button/keyboard fixes
+
+### What Was NOT Pushed (still needs to be done)
+- `app/curriculum/page.tsx`
+- `app/uploads/page.tsx`
+- `app/portfolio/page.tsx`
+- `app/sharing/page.tsx`
+- `app/admin/submissions/page.tsx`
+- `app/admin/review/page.tsx`
+
+### Full List of Required Fixes (apply to all files above)
+
+#### Critical (WCAG 2.1 AA failures)
+
+1. **Form labels not connected to inputs** (`login/page.tsx`, `uploads/page.tsx`)
+   - Add `htmlFor="field-id"` to every `<label>` and matching `id="field-id"` to every `<input>`
+
+2. **Icon-only buttons have no accessible name** (every page)
+   - Add `aria-label="..."` to every button that contains only a Material Symbols icon and no visible text
+   - Affected buttons: notification bell, pagination prev/next chevrons, floating "+" action button, "more_horiz" options button, help button, "open full view" button
+
+3. **No skip navigation link** (every page)
+   - Add `<a href="#main-content" className="sr-only focus:not-sr-only ...">Skip to main content</a>` at the top of `layout.tsx`
+   - Add `id="main-content"` to the `<main>` element on every page
+
+4. **Toggle switches inaccessible** (`sharing/page.tsx`)
+   - Add `role="switch"`, `aria-checked={isOn}`, and `aria-label="[what it controls]"` to every toggle `<button>`
+
+5. **Contrast failure — zinc-400 text on light backgrounds** (every page)
+   - Replace `text-zinc-400` with `text-zinc-500` everywhere it is used for body/label/metadata text
+   - `text-zinc-500` (#71717a) passes WCAG AA at ~4.8:1 on white; `text-zinc-400` (#a1a1aa) fails at ~2.4:1
+
+6. **Font sizes too small** (every page)
+   - Replace `text-[8px]`, `text-[9px]`, `text-[10px]` with `text-xs` (12px minimum) throughout all pages
+
+7. **Interactive `<div>` elements not keyboard accessible** (`dashboard`, `curriculum`, `uploads`)
+   - Convert milestone cards and upload drop zones from `<div>` with `cursor-pointer` to `<button>` elements (or add `role="button"`, `tabIndex={0}`, and `onKeyDown` handlers)
+
+8. **Focus indicators removed** (`login`, `uploads`, `admin/review`)
+   - Remove `focus:outline-none` from inputs and textareas
+   - Replace with a visible focus ring: e.g. `focus:ring-2 focus:ring-primary focus:outline-none` (ring is visible; outline suppression is acceptable when a ring replaces it)
+
+9. **Error message not announced to screen readers** (`login/page.tsx`)
+   - Add `role="alert"` to the error `<p>` element so screen readers announce it automatically on appearance
+
+#### Moderate (Best Practice / Borderline AA)
+
+10. **Unique page titles** (every page / `layout.tsx`)
+    - Each page must export its own `metadata` object with a unique `title`, e.g. `"Dashboard | Cardinal Choice"`
+    - Remove or override the shared title in `layout.tsx`
+
+11. **Multiple `<nav>` elements without `aria-label`** (every page)
+    - Add distinguishing `aria-label` to each nav: e.g. `aria-label="Primary navigation"`, `aria-label="Sidebar navigation"`, `aria-label="Mobile navigation"`
+
+12. **Table headers missing `scope` attribute** (`admin/submissions/page.tsx`)
+    - Add `scope="col"` to every `<th>` in the submissions table
+
+13. **`href="#"` placeholder links** (every page)
+    - Replace with real routes, or change to `<button>` elements where no route exists yet
+
+14. **Reduced-opacity elements failing contrast** (`dashboard`, `curriculum`)
+    - Remove `opacity-50` / `opacity-60` from text in locked/advanced milestone cards, or darken the base text color to compensate
+
+#### Minor
+
+15. **Autocomplete attributes missing on login form** (`login/page.tsx`)
+    - Add `autoComplete="email"` to the email input and `autoComplete="current-password"` to the password input
+
+16. **Breadcrumb missing `aria-label`** (`admin/review/page.tsx`)
+    - Add `aria-label="breadcrumb"` to the breadcrumb `<nav>`
+    - Add `aria-current="page"` to the last breadcrumb item
+
+17. **`<aside>` elements without `aria-label`** (`dashboard`, `curriculum`, `portfolio`)
+    - Add `aria-label="..."` to each `<aside>` to distinguish them in landmark navigation
