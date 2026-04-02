@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
@@ -11,6 +11,10 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
+  useEffect(() => {
+    document.title = 'Sign In — Cardinal Choice'
+  }, [])
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -18,30 +22,27 @@ export default function LoginPage() {
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
-    console.log('Auth result:', { data, error })
-
     if (error) {
       setError(error.message)
       setLoading(false)
       return
     }
 
-    const { data: profile, error: profileError } = await supabase
+    const { data: profile } = await supabase
       .from('profiles')
       .select('role')
       .eq('id', data.user.id)
       .single()
 
-    console.log('Profile result:', { profile, profileError })
-
     if (profile?.role === 'admin') {
-  window.location.href = '/admin/submissions'
-} else {
-  window.location.href = '/dashboard'
-}
-}
+      window.location.href = '/admin/submissions'
+    } else {
+      window.location.href = '/dashboard'
+    }
+  }
+
   return (
-    <main className="min-h-screen flex items-center justify-center bg-surface">
+    <main id="main-content" className="min-h-screen flex items-center justify-center bg-surface">
       <div className="w-full max-w-md px-6">
 
         {/* Logo */}
@@ -60,36 +61,40 @@ export default function LoginPage() {
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">
+              <label htmlFor="email" className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">
                 University Email
               </label>
               <input
+                id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border border-outline-variant rounded-lg px-4 py-3 text-sm font-body text-on-surface bg-surface-container-low focus:outline-none focus:border-primary transition-colors"
+                autoComplete="email"
+                className="w-full border border-outline-variant rounded-lg px-4 py-3 text-sm font-body text-on-surface bg-surface-container-low focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
                 placeholder="you@louisville.edu"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">
+              <label htmlFor="password" className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">
                 Password
               </label>
               <input
+                id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-outline-variant rounded-lg px-4 py-3 text-sm font-body text-on-surface bg-surface-container-low focus:outline-none focus:border-primary transition-colors"
-                placeholder="••••••••"
+                autoComplete="current-password"
+                className="w-full border border-outline-variant rounded-lg px-4 py-3 text-sm font-body text-on-surface bg-surface-container-low focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+                placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
                 required
               />
             </div>
 
             {error && (
-              <div className="flex items-center gap-2 p-3 bg-error-container rounded-lg">
-                <span className="material-symbols-outlined text-error text-sm">error</span>
+              <div role="alert" className="flex items-center gap-2 p-3 bg-error-container rounded-lg">
+                <span className="material-symbols-outlined text-error text-sm" aria-hidden="true">error</span>
                 <p className="text-error text-xs font-medium">{error}</p>
               </div>
             )}
@@ -104,7 +109,7 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="text-center text-[10px] text-zinc-400 mt-8 uppercase tracking-widest">
+        <p className="text-center text-xs text-zinc-500 mt-8 uppercase tracking-widest">
           University of Louisville — MBA Program
         </p>
       </div>
