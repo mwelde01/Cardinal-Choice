@@ -160,6 +160,8 @@ All screens were pre-designed as HTML prototypes (.txt files) and are being conv
 - [x] Deployed to Vercel — auto-deploys on push to `master` branch
 - [x] Admin Review Detail fixed for Vercel — `useSearchParams()` wrapped in `<Suspense>` + `export const dynamic = 'force-dynamic'`
 
+- [x] WCAG 2.1 AA accessibility audit completed and all fixes applied to all 9 pages ✅
+
 ### Pending — Next Session
 - [ ] Connect `app/uploads/page.tsx` to live Supabase data (show existing submissions per course)
 - [ ] Connect `app/sharing/page.tsx` to live data
@@ -167,7 +169,7 @@ All screens were pre-designed as HTML prototypes (.txt files) and are being conv
 - [ ] Add RLS policy so students can read only their own submissions (currently only admin RLS is in place for submissions table)
 - [ ] Account creation / access code flow for new students (admin creates account → student gets one-time code → sets password)
 - [ ] Panopto embed code submission on uploads page
-- [ ] Sync local VS Code files with GitHub — `app/admin/review/page.tsx` and `app/portfolio/page.tsx` were fixed directly via GitHub MCP and may differ from local copies
+- [ ] `href="#"` placeholder links on Settings and Analytics nav items — will be fixed when those pages are built
 
 ## Authentication Notes
 - Middleware uses `@supabase/ssr` — different from client-side `@supabase/supabase-js` in `lib/supabase.ts`
@@ -225,4 +227,47 @@ claude/<description>-<SESSION_ID>
 Example: `claude/add-upload-endpoint-QJGwn`
 
 Push with: `git push -u origin <branch-name>`
+
+---
+
+## Session Behavior Rules (IMPORTANT)
+
+- **Do NOT retry push operations repeatedly.** If a push fails or uses significant session context, stop and report status to the user instead of retrying.
+- **Do NOT attempt large multi-file operations near session limits.** If context is running low, stop, document what remains, and ask the user to start a new session.
+- **When a push partially completes and breaks the site**, immediately note which files were pushed and which were not — do not attempt further pushes.
+- **Push one file at a time for large multi-file tasks** to ensure each succeeds before moving to the next.
+
+---
+
+## Vercel Deployment Notes
+
+- **Production branch must be `master`** (not `main`) — the `main` branch only has `.txt` prototype files and `CLAUDE.md`, no Next.js app
+- **Root Directory** should be blank/empty in Vercel settings
+- To manually trigger a redeploy: push any commit to `master` — Vercel auto-deploys on every push
+- Preview deployments from `claude/*` branches will always fail (those branches have no app code) — this is expected and can be ignored
+- Demo credentials: Student `test@louisville.edu` / `Test1234!` — Admin `admin@louisville.edu` / `Admin1234!`
+
+---
+
+## WCAG / ADA Accessibility Work
+
+### Status (as of 2026-04-02) — COMPLETE ✅
+A full WCAG 2.1 AA audit was completed and all fixes applied directly to `master`. Vercel redeploys automatically on push to master.
+
+### All 9 Files Fixed
+
+| File | Changes Applied |
+|------|----------------|
+| `app/layout.tsx` | Skip-nav link, per-page title support |
+| `app/login/page.tsx` | htmlFor/id on inputs, role="alert" on error, autocomplete, focus ring |
+| `app/dashboard/page.tsx` | Skip-nav target, aria-labels on navs/asides/buttons, interactive card roles |
+| `app/curriculum/page.tsx` | aria-labels, id="main-content", text-xs, zinc-500, interactive card roles, aria-pressed, removed opacity-50 |
+| `app/uploads/page.tsx` | aria-labels, id="main-content", htmlFor/id on Display Title, label→p for button group, help button aria-label |
+| `app/portfolio/page.tsx` | aria-labels on nav/aside/sidebar-nav, id="main-content", text-xs, zinc-500 |
+| `app/sharing/page.tsx` | Toggle: role="switch" + aria-checked + aria-label, all nav/aside labels, text-xs, zinc-500 |
+| `app/admin/submissions/page.tsx` | scope="col" on table headers, aria-labels on pagination/FAB/buttons, id="main-content", text-xs |
+| `app/admin/review/page.tsx` | Breadcrumb aria-label + aria-current="page", nav/aside labels, id="main-content", label on textarea |
+
+### Remaining Known Gap
+- `href="#"` placeholder links on Settings and Analytics nav items — not yet built pages, will be addressed when those pages are created
 
