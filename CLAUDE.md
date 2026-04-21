@@ -13,7 +13,7 @@
 Screens where students manage their academic work and portfolio.
 
 | Screen | Purpose |
-|--------|---------|
+|--------|-------|
 | **Student Dashboard** | Primary landing page — recent activity, quick-upload buttons, progress summary |
 | **Curriculum Submission Monitor** | Tracks the 11 core course requirements with status badges (Approved, In Review, Locked) and timestamps |
 | **Course-Based Uploads** | Upload area organized by MBA course (e.g. MBA 625) — drop-zones for each milestone and final track deliverable |
@@ -25,9 +25,9 @@ Screens where students manage their academic work and portfolio.
 Screens for faculty and staff to monitor and review submissions.
 
 | Screen | Purpose |
-|--------|---------|
-| **Submission Management Console** | Global dashboard — sortable list of all 120+ submissions, status filters, volume analytics |
-| **Submission Review Detail** | Individual student review workspace — integrated PDF viewer, academic rubric checklist, revision/approval controls |
+|--------|-------|
+| **Submission Management Console** | Global dashboard — one row per student with 4 phase status columns (Approved / In Review / Not Started); filters by phase and status |
+| **Submission Review Detail** | Batch review workspace — shows all documents for a selected student + phase; single feedback + approval per phase; Phase 4 has separate sections for portfolio docs and the final deliverable |
 
 ---
 
@@ -38,6 +38,14 @@ Screens for faculty and staff to monitor and review submissions.
 - **Track-specific deliverable** — A final submission that varies by the student's MBA concentration
 - **Submission statuses (database values):** `approved`, `in_review`, `locked` (lowercase with underscores — enforced by DB check constraint)
 - **~120+ students** submit annually
+- **4 Portfolio Submission Phases** — students submit documents in 4 batches tied to course completion:
+  - **Phase 1 — Explore:** MBA 626, MBA 632, MBA 631 (due after MBA 631)
+  - **Phase 2 — Develop:** MBA 628, MBA 625, MBA 635 (due after MBA 635)
+  - **Phase 3 — Refine:** MBA 630, MBA 640, MBA 668 (due after MBA 668)
+  - **Phase 4 — Final:** MBA 655, MBA 656 + Final Deliverable (Panopto) (due after MBA 656)
+- Students can upload documents individually within a phase or submit the whole phase at once
+- Admins review and approve at the **phase level** (batch approval), not document by document
+- Phase 4 is reviewed in two parts: the portfolio course docs (MBA 655/656) and the Final Deliverable separately
 
 ---
 
@@ -45,7 +53,7 @@ Screens for faculty and staff to monitor and review submissions.
 
 | Layer | Technology | Notes |
 |-------|-----------|-------|
-| **Frontend / Hosting** | Next.js on Vercel | Or university-hosted if IT supports it |
+| **Frontend / Hosting** | Next.js on Render | Moved from Vercel to Render for demo hosting |
 | **Database + Auth** | Supabase | Includes email/password auth, PostgreSQL |
 | **File Storage** | University server (preferred) or Supabase | University server = $0; Supabase 100GB included in Pro plan |
 | **Video** | Panopto embed codes | Students paste Panopto embed code for final deliverable — no video file upload |
@@ -66,9 +74,9 @@ Screens for faculty and staff to monitor and review submissions.
 
 ## Pending Decisions (Awaiting University IT Conversation)
 
-- **Hosting path:** University-hosted (in-house, ~$0/yr) vs. cloud (Vercel + Supabase, ~$540/yr) — blocked on university IT proposal/approval process
+- **Hosting path:** Currently using Render for demos. University-hosted (in-house, ~$0/yr) remains the long-term goal — blocked on university IT proposal/approval process
 - **File storage:** University server vs. Supabase storage — depends on hosting outcome above
-- **Outside vendor approval:** University requires a proposal process for outside vendors (Vercel, Supabase) — IT conversation needed before committing to cloud path
+- **Outside vendor approval:** University requires a proposal process for outside vendors (Render, Supabase) — IT conversation needed before committing to cloud path
 
 ---
 
@@ -80,21 +88,21 @@ Screens for faculty and staff to monitor and review submissions.
 | University server (app + files) | ~$0 |
 | **Total** | **~$0/yr** |
 
-### Annual Cost — Cloud Hosting (Vercel + Supabase)
+### Annual Cost — Cloud Hosting (Render + Supabase)
 | Component | Cost |
 |-----------|------|
-| Vercel Pro (web app) | ~$240/yr |
+| Render (web app hosting) | TBD |
 | Supabase Pro (database + auth + file storage) | ~$300/yr |
 | Video storage | $0 (Panopto — university-provided) |
-| **Total** | **~$540/yr** |
+| **Total** | **TBD** |
 
 ### Annual Cost — Hybrid (Cloud App + University File Storage)
 | Component | Cost |
 |-----------|------|
-| Vercel Pro | ~$240/yr |
+| Render (web app) | TBD |
 | Supabase (database + auth only) | ~$300/yr |
 | File storage | $0 (university server) |
-| **Total** | **~$540/yr** |
+| **Total** | **TBD** |
 
 ### Storage Projection (Files Only — No Video)
 | Timeframe | Students | Estimated Storage |
@@ -161,7 +169,7 @@ Must be exactly: `approved`, `in_review`, `locked` (lowercase, underscores)
 
 ## Build Progress
 
-### Phase 1 Status (as of 2026-03-31)
+### Status (as of 2026-04-21)
 - [x] Supabase project created
 - [x] Database schema deployed
 - [x] Next.js project created locally
@@ -175,33 +183,36 @@ Must be exactly: `approved`, `in_review`, `locked` (lowercase, underscores)
 - [x] Student Dashboard connected to live Supabase data ✅
 - [x] Curriculum Submission Monitor connected to live Supabase data ✅
 - [x] Admin Submissions Console connected to live Supabase data ✅
-- [x] Admin Review Detail connected to live Supabase data ✅ (loads via ?id= URL param from View Details button)
-- [x] App deployed to Vercel for demo purposes (see Vercel Deployment section below)
-- [ ] Add RLS policy so students can read their own submissions (needed for dashboard/curriculum data to load correctly for real students)
+- [x] Admin Review Detail connected to live Supabase data ✅
+- [x] App deployed to Render for demo purposes (moved from Vercel)
+- [x] Admin Submissions Console redesigned — student-centric view with 4 phase columns ✅ (branch: claude/resume-submissions-console-NXGGG)
+- [x] Admin Review Detail redesigned — batch review by student+phase ✅ (branch: claude/resume-submissions-console-NXGGG)
+- [ ] Merge branch `claude/resume-submissions-console-NXGGG` into master
+- [ ] Add RLS policy so students can read their own submissions
 - [ ] Connect remaining pages to live data: uploads, portfolio, sharing
+- [ ] Redesign student Uploads page — organized by the 4 phases with per-phase Submit button
 - [ ] File upload functionality (blocked on university IT hosting decision)
 - [ ] Panopto embed code submission
 - [ ] Account creation / access code flow for new students
 
 ---
 
-## Vercel Deployment (for demos)
+## Render Deployment (for demos)
 
-To show the app without running it locally, deploy to Vercel:
+Hosting has moved from Vercel to **Render**. The app is deployed on Render connected to the `master` branch — pushes to `master` trigger automatic redeployment.
 
-1. Go to vercel.com and sign in with GitHub
-2. Click **Add New Project** → import `mwelde01/Cardinal-Choice`
-3. Add environment variables:
+To deploy to Render:
+1. Go to render.com and sign in with GitHub
+2. Create a new **Web Service** → connect `mwelde01/Cardinal-Choice`
+3. Set build command: `npm run build`
+4. Set start command: `npm start`
+5. Add environment variables:
    - `NEXT_PUBLIC_SUPABASE_URL` — copy from `.env.local`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY` — copy from `.env.local`
-4. Click **Deploy**
-5. Share the generated URL (e.g. `cardinal-choice.vercel.app`)
 
 **Demo credentials:**
 - Student: `test@louisville.edu` / `Test1234!`
 - Admin: `admin@louisville.edu` / `Admin1234!`
-
-Note: Vercel free tier is fine for demos. Only upgrade to Pro if going to production.
 
 ---
 
@@ -251,7 +262,7 @@ export async function signOut() {
 |-----------|-----------|------|
 | Admin pages | Dashboard | `/dashboard` |
 | Admin pages | Submissions | `/admin/submissions` |
-| Submissions console | View Details | `/admin/review?id={submission_id}` |
+| Submissions console | Phase links (P1–P4) on row hover | `/admin/review?student={student_id}&phase={1-4}` |
 
 ---
 
@@ -259,7 +270,7 @@ export async function signOut() {
 
 ### Phase 1 — Foundation ✅
 ### Phase 2 — Student Experience ✅ (pages built, dashboard + curriculum connected to live data)
-### Phase 3 — Admin Console ✅ (fully connected to live data)
+### Phase 3 — Admin Console ✅ (fully connected to live data; phase-based redesign complete on branch)
 ### Phase 4 — Testing & Launch (pending)
 
 ---
