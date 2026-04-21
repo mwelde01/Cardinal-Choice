@@ -10,20 +10,24 @@
 
 ### Student Experience (Front-End)
 
+Screens where students manage their academic work and portfolio.
+
 | Screen | Purpose |
 |--------|-------|
 | **Student Dashboard** | Primary landing page — recent activity, quick-upload buttons, progress summary |
 | **Curriculum Submission Monitor** | Tracks the 11 core course requirements with status badges (Approved, In Review, Locked) and timestamps |
-| **Course-Based Uploads** | Upload area organized by MBA course — drop-zones for each milestone and final track deliverable |
-| **Portfolio Preview** | Public-facing view of the student’s curated best work and academic track |
+| **Course-Based Uploads** | Upload area organized by MBA course (e.g. MBA 625) — drop-zones for each milestone and final track deliverable |
+| **Portfolio Preview** | Public-facing view of the student's curated best work and academic track |
 | **Sharing & Permissions** | Privacy toggles and secure link generation for external reviewers |
 
 ### Administrator Console (Back-End)
 
+Screens for faculty and staff to monitor and review submissions.
+
 | Screen | Purpose |
 |--------|-------|
-| **Submission Management Console** | Global dashboard — sortable list of all 120+ submissions, status filters, volume analytics |
-| **Submission Review Detail** | Individual student review workspace — integrated PDF viewer, academic rubric checklist, revision/approval controls |
+| **Submission Management Console** | Global dashboard — one row per student with 4 phase status columns (Approved / In Review / Not Started); filters by phase and status |
+| **Submission Review Detail** | Batch review workspace — shows all documents for a selected student + phase; single feedback + approval per phase; Phase 4 has separate sections for portfolio docs and the final deliverable |
 
 ---
 
@@ -31,9 +35,17 @@
 
 - **Milestones** — Deliverables tied to specific MBA courses that students upload for review
 - **11 core course requirements** — The fixed set of milestones every student must complete
-- **Track-specific deliverable** — A final submission that varies by the student’s MBA concentration
-- **Submission statuses:** `approved`, `in_review`, `locked` (lowercase with underscores in DB)
+- **Track-specific deliverable** — A final submission that varies by the student's MBA concentration
+- **Submission statuses (database values):** `approved`, `in_review`, `locked` (lowercase with underscores — enforced by DB check constraint)
 - **~120+ students** submit annually
+- **4 Portfolio Submission Phases** — students submit documents in 4 batches tied to course completion:
+  - **Phase 1 — Explore:** MBA 626, MBA 632, MBA 631 (due after MBA 631)
+  - **Phase 2 — Develop:** MBA 628, MBA 625, MBA 635 (due after MBA 635)
+  - **Phase 3 — Refine:** MBA 630, MBA 640, MBA 668 (due after MBA 668)
+  - **Phase 4 — Final:** MBA 655, MBA 656 + Final Deliverable (Panopto) (due after MBA 656)
+- Students can upload documents individually within a phase or submit the whole phase at once
+- Admins review and approve at the **phase level** (batch approval), not document by document
+- Phase 4 is reviewed in two parts: the portfolio course docs (MBA 655/656) and the Final Deliverable separately
 
 ---
 
@@ -41,10 +53,10 @@
 
 | Layer | Technology | Notes |
 |-------|-----------|-------|
-| **Frontend / Hosting** | Next.js on Vercel | Auto-deploys from master branch |
+| **Frontend / Hosting** | Next.js on Render | Moved from Vercel to Render for demo hosting |
 | **Database + Auth** | Supabase | Includes email/password auth, PostgreSQL |
 | **File Storage** | University server (preferred) or Supabase | University server = $0; Supabase 100GB included in Pro plan |
-| **Video** | Panopto embed codes | Students paste Panopto embed code — no file upload |
+| **Video** | Panopto embed codes | Students paste Panopto embed code for final deliverable — no video file upload |
 | **PDF Viewer** | Read-only embedded viewer | No markup or annotation needed |
 
 ---
@@ -52,18 +64,19 @@
 ## Key Technical Decisions (Confirmed)
 
 - **Student authentication:** Email + password login — NOT university SSO, NOT magic links
-  - Account creation flow: admin creates account → student receives one-time access code via email → student sets password → all future logins use email + password
+  - Account creation flow: admin creates account using student's university email → student receives one-time access code via email → student uses access code to activate account and set a password → all future logins use email + password
+  - Login identifier: university email address (not username)
 - **Admin authentication:** Same login system, different role
-- **Video submissions:** Students submit Panopto embed code; video plays embedded on Portfolio Preview — no file upload
-- **PDF viewing:** Read-only viewer only
+- **Video submissions:** Students submit Panopto embed code (university-provided platform); video plays embedded on Portfolio Preview page — no file upload, no storage cost
+- **PDF viewing:** Read-only viewer only — no annotation or markup capability needed
 - **File uploads:** PDFs, Word docs, audio files for milestones; Panopto embed link for final track deliverable
-- **File storage:** University server preferred; Supabase storage as fallback
+- **File storage:** University server preferred; Supabase storage as fallback if university hosting unavailable
 
 ## Pending Decisions (Awaiting University IT Conversation)
 
-- **Hosting path:** University-hosted (~$0/yr) vs. cloud (Vercel + Supabase, ~$540/yr) — blocked on IT approval process
-- **File storage:** University server vs. Supabase storage — depends on hosting outcome
-- **Outside vendor approval:** University requires proposal process for Vercel, Supabase — procurement forms in progress
+- **Hosting path:** Currently using Render for demos. University-hosted (in-house, ~$0/yr) remains the long-term goal — blocked on university IT proposal/approval process
+- **File storage:** University server vs. Supabase storage — depends on hosting outcome above
+- **Outside vendor approval:** University requires a proposal process for outside vendors (Render, Supabase) — IT conversation needed before committing to cloud path
 
 ---
 
@@ -75,13 +88,21 @@
 | University server (app + files) | ~$0 |
 | **Total** | **~$0/yr** |
 
-### Annual Cost — Cloud Hosting (Vercel + Supabase)
+### Annual Cost — Cloud Hosting (Render + Supabase)
 | Component | Cost |
 |-----------|------|
-| Vercel Pro (web app) | ~$240/yr |
+| Render (web app hosting) | TBD |
 | Supabase Pro (database + auth + file storage) | ~$300/yr |
 | Video storage | $0 (Panopto — university-provided) |
-| **Total** | **~$540/yr** |
+| **Total** | **TBD** |
+
+### Annual Cost — Hybrid (Cloud App + University File Storage)
+| Component | Cost |
+|-----------|------|
+| Render (web app) | TBD |
+| Supabase (database + auth only) | ~$300/yr |
+| File storage | $0 (university server) |
+| **Total** | **TBD** |
 
 ### Storage Projection (Files Only — No Video)
 | Timeframe | Students | Estimated Storage |
@@ -96,118 +117,175 @@ Storage remains well within Supabase Pro 100GB limit for the foreseeable future.
 
 ## Next.js Project Setup
 
-- Uses **Tailwind CSS v4** — configuration in `app/globals.css` using `@import "tailwindcss"` and `@theme {}` block (NOT `tailwind.config.ts`)
-- Fonts loaded via Google Fonts in `app/layout.tsx` (Inter + Manrope + Material Symbols)
-- Supabase client at `lib/supabase.ts` — reads from `.env.local`
+- Project created at: `Documents/AI in Business Application/Reader/cardinal-choice`
+- Uses **Tailwind CSS v4** — configuration is in `app/globals.css` using `@import "tailwindcss"` and `@theme {}` block (NOT `tailwind.config.ts`)
+- Fonts loaded via Google Fonts links in `app/layout.tsx` (Inter + Manrope + Material Symbols)
+- Supabase client at `lib/supabase.ts` — uses `createBrowserClient` from `@supabase/ssr` (stores session in cookies so middleware can read it)
 - `.env.local` contains `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-### HTML Design Mockups
-All screens were pre-designed as HTML prototypes (.txt files) and converted to Next.js pages:
+### HTML Design Mockups (in GitHub main branch)
+All screens were pre-designed as HTML prototypes (.txt files) and have been converted to Next.js pages:
 - `Student Dashboardl.txt` → `app/dashboard/page.tsx` ✅
+- `Curriculum Dashboard.txt` → alternate dashboard design (reference only)
 - `Curriculum Submission Monitor.txt` → `app/curriculum/page.tsx` ✅
 - `Course Based Uploads.txt` → `app/uploads/page.tsx` ✅
 - `Portfolio Preview.txt` → `app/portfolio/page.tsx` ✅
+- `Sharing & Permissions` → `app/sharing/page.tsx` ✅
 - `Submission Review Detail.txt` → `app/admin/review/page.tsx` ✅
 - `Submissions Managment Console.txt` → `app/admin/submissions/page.tsx` ✅
 
 ---
 
+## Database Schema
+
+### Tables
+| Table | Key Columns |
+|-------|------------|
+| `profiles` | id, email, full_name, role, mba_track, is_active, created_at |
+| `courses` | id, code, name, sort_order |
+| `milestones` | id, course_id, title, description, is_core, allows_panopto, sort_order |
+| `submissions` | id, student_id, milestone_id, status, file_url, file_name, file_type, panopto_embed_code, reviewer_notes, submitted_at, reviewed_at, reviewed_by, created_at, updated_at |
+| `portfolio_items` | (columns not yet confirmed) |
+| `sharing_links` | (columns not yet confirmed) |
+| `access_codes` | (columns not yet confirmed) |
+
+### Submission Status Values (DB constraint)
+Must be exactly: `approved`, `in_review`, `locked` (lowercase, underscores)
+
+### RLS Policies in Place
+- `profiles`: Users can read own profile; Authenticated users can read all profiles
+- `submissions`: Admins can read all submissions; students need a policy added to read their own
+- `milestones`: Authenticated users can read milestones
+- `courses`: Authenticated users can read courses
+
+### Test Data
+- Test student: `test@louisville.edu` / `Test1234!` (role: student, full_name: Alex Chen, id: `07aa6746-8dfa-4068-b39e-5b691c5a02ab`)
+- Test admin: `admin@louisville.edu` / `Admin1234!` (role: admin)
+- 11 courses (MBA 625–MBA 668) inserted
+- 11 milestones inserted (one per course)
+- 11 test submissions inserted for Alex Chen (8 approved, 1 in_review, 2 locked)
+
+---
+
 ## Build Progress
 
-### Phase 1 & 2 Status (as of 2026-04-20)
-- [x] Supabase project created and schema deployed
+### Status (as of 2026-04-21)
+- [x] Supabase project created
+- [x] Database schema deployed
 - [x] Next.js project created locally
-- [x] Supabase client connected via `.env.local`
-- [x] All 7 pages built (login, dashboard, curriculum, uploads, portfolio, sharing, admin/submissions, admin/review)
-- [x] Middleware created — `middleware.ts` in root (redirects unauthenticated users to `/login`)
-- [x] `@supabase/ssr` package installed
-- [x] Post-login redirect uses `window.location.href` so middleware reads session cookie
-- [x] Supabase client uses `createBrowserClient` from `@supabase/ssr` (cookies, not localStorage)
-- [x] Sign Out wired on all 7 pages via `lib/signout.ts`
-- [x] Navigation links wired across all pages
-- [x] Test student: `test@louisville.edu` / `Test1234!` (role: student, name: Alex Chen)
-- [x] Test admin: `admin@louisville.edu` (role: admin) — redirects to `/admin/submissions`
-- [x] Test data seeded: courses, milestones, submissions in Supabase
-- [x] RLS policies: profiles readable by all authenticated users; submissions readable by admins
-- [x] Student Dashboard connected to live Supabase data
-- [x] Curriculum Submission Monitor connected to live data
-- [x] Admin Submissions Console connected to live data
-- [x] Admin Review Detail connected to live data (URL param `?id=`)
-- [x] Portfolio page shows logged-in student’s name dynamically
-- [x] Deployed to Vercel — auto-deploys on push to `master` branch
-- [x] Admin Review Detail fixed for Vercel — `useSearchParams()` wrapped in `<Suspense>`
-
-### Accessibility (WCAG 2.1 AA) — In Progress
-A full audit was completed on 2026-04-20. Issues found and fix status:
-
-**Fixed (pushed to master):**
-- [x] `app/layout.tsx` — Added skip navigation link (`Skip to main content`)
-- [x] `app/login/page.tsx` — Fixed label/input associations (htmlFor + id), added autocomplete attributes, added `role="alert"` to error message, improved focus ring
-- [x] `app/dashboard/page.tsx` — Added aria-labels to nav/aside/buttons, fixed font sizes (text-[8-10px] → text-xs), fixed contrast (zinc-400 → zinc-500 for meaningful text), added aria-hidden to decorative icons, added `id="main-content"`, added unique page title
-
-**Still To Fix (next session):**
-- [ ] `app/curriculum/page.tsx` — Same pattern as dashboard
-- [ ] `app/uploads/page.tsx` — Fix label/input associations, aria labels, font sizes
-- [ ] `app/portfolio/page.tsx` — Aria labels, font sizes, contrast
-- [ ] `app/sharing/page.tsx` — Fix Toggle component (needs `role="switch"`, `aria-checked`, `aria-label`), aria labels, font sizes
-- [ ] `app/admin/submissions/page.tsx` — Add `scope="col"` to table headers, fix filter select labels (missing htmlFor/id), aria labels, font sizes
-- [ ] `app/admin/review/page.tsx` — Fix breadcrumb (`aria-label="Breadcrumb"`, `aria-current="page"`), fix textarea label association, aria labels, font sizes
-
-**Issues common to ALL remaining pages:**
-- Font sizes: `text-[8px]`, `text-[9px]`, `text-[10px]` → `text-xs` minimum
-- Contrast: `text-zinc-400` on light backgrounds (2.4:1) → `text-zinc-500` (4.8:1) for meaningful text
-- Icon-only buttons need `aria-label`; decorative icon spans need `aria-hidden="true"`
-- `<nav>` elements need `aria-label` to distinguish multiple navs per page
-- `<main>` elements need `id="main-content"` for skip nav to work
-- Each page needs unique `document.title` set in useEffect
-
-### Pending — Next Session
-- [ ] Complete remaining 6 pages of accessibility fixes (see above)
-- [ ] Investigate Vercel build status after accessibility push — confirm site is loading
-- [ ] Connect `app/uploads/page.tsx` to live Supabase data
-- [ ] Connect `app/sharing/page.tsx` to live data
-- [ ] **File upload functionality** — blocked on university IT hosting decision
-- [ ] Add RLS policy so students can read only their own submissions
+- [x] Supabase client connected via `.env.local` — uses `createBrowserClient` from `@supabase/ssr`
+- [x] Login page built and working — `app/login/page.tsx`
+- [x] All 7 pages built
+- [x] Middleware created — protects all pages, redirects unauthenticated users to `/login`
+- [x] Role-based redirect working — students → `/dashboard`, admins → `/admin/submissions`
+- [x] Sign Out wired up on ALL pages
+- [x] Navigation links wired on ALL pages
+- [x] Student Dashboard connected to live Supabase data ✅
+- [x] Curriculum Submission Monitor connected to live Supabase data ✅
+- [x] Admin Submissions Console connected to live Supabase data ✅
+- [x] Admin Review Detail connected to live Supabase data ✅
+- [x] App deployed to Render for demo purposes (moved from Vercel)
+- [x] Admin Submissions Console redesigned — student-centric view with 4 phase columns ✅ (branch: claude/resume-submissions-console-NXGGG)
+- [x] Admin Review Detail redesigned — batch review by student+phase ✅ (branch: claude/resume-submissions-console-NXGGG)
+- [ ] Merge branch `claude/resume-submissions-console-NXGGG` into master
+- [ ] Add RLS policy so students can read their own submissions
+- [ ] Connect remaining pages to live data: uploads, portfolio, sharing
+- [ ] Redesign student Uploads page — organized by the 4 phases with per-phase Submit button
+- [ ] File upload functionality (blocked on university IT hosting decision)
+- [ ] Panopto embed code submission
 - [ ] Account creation / access code flow for new students
-- [ ] Panopto embed code submission on uploads page
+
+---
+
+## Render Deployment (for demos)
+
+Hosting has moved from Vercel to **Render**. The app is deployed on Render connected to the `master` branch — pushes to `master` trigger automatic redeployment.
+
+To deploy to Render:
+1. Go to render.com and sign in with GitHub
+2. Create a new **Web Service** → connect `mwelde01/Cardinal-Choice`
+3. Set build command: `npm run build`
+4. Set start command: `npm start`
+5. Add environment variables:
+   - `NEXT_PUBLIC_SUPABASE_URL` — copy from `.env.local`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` — copy from `.env.local`
+
+**Demo credentials:**
+- Student: `test@louisville.edu` / `Test1234!`
+- Admin: `admin@louisville.edu` / `Admin1234!`
+
+---
 
 ## Authentication Notes
-- Middleware uses `@supabase/ssr` — different from client-side `@supabase/supabase-js`
-- After login, must use `window.location.href` (not `router.push`) to force full page reload
-- `lib/supabase.ts` uses `createBrowserClient` from `@supabase/ssr` — stores session in cookies
-- Test student: `test@louisville.edu` / `Test1234!` — name: Alex Chen, role: student
-- Test admin: `admin@louisville.edu` — role: admin, redirects to `/admin/submissions`
-- Submission statuses in DB: `approved`, `in_review`, `locked` (lowercase with underscores)
+- Middleware uses `@supabase/ssr` — `lib/supabase.ts` also uses `createBrowserClient` from `@supabase/ssr` (NOT `createClient` from `@supabase/supabase-js`) so sessions are stored in cookies the middleware can read
+- After login, must use `window.location.href` (not `router.push`) to force full page reload so middleware can pick up the session cookie
+- All pages require `'use client'` at the top (first line, before all imports) since they use event handlers
+
+---
+
+## Key File Contents
+
+### `lib/supabase.ts`
+```typescript
+import { createBrowserClient } from '@supabase/ssr'
+
+export const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+```
+
+### `lib/signout.ts`
+```typescript
+import { supabase } from './supabase'
+export async function signOut() {
+  await supabase.auth.signOut()
+  window.location.href = '/login'
+}
+```
+
+---
+
+## Navigation Link Map
+
+### Student pages
+| From page | Link label | href |
+|-----------|-----------|------|
+| All student pages | Dashboard | `/dashboard` |
+| All student pages | Materials / My Files | `/uploads` |
+| All student pages | Portfolio | `/portfolio` |
+| All student pages | Curriculum / Timeline | `/curriculum` |
+| All student pages | Access / Sharing | `/sharing` |
+
+### Admin pages
+| From page | Link label | href |
+|-----------|-----------|------|
+| Admin pages | Dashboard | `/dashboard` |
+| Admin pages | Submissions | `/admin/submissions` |
+| Submissions console | Phase links (P1–P4) on row hover | `/admin/review?student={student_id}&phase={1-4}` |
 
 ---
 
 ## Build Phases
 
 ### Phase 1 — Foundation ✅
-### Phase 2 — Student Experience ✅
-### Phase 3 — Admin Console ✅
-### Phase 4 — Accessibility, Data, & Launch
-- WCAG 2.1 AA compliance (in progress)
-- File upload functionality (pending IT decision)
-- Account creation / access code flow
-- Pilot with small student group
-- Full rollout
-
-### Key Dependency
-University IT conversation needed to determine hosting and file storage path.
+### Phase 2 — Student Experience ✅ (pages built, dashboard + curriculum connected to live data)
+### Phase 3 — Admin Console ✅ (fully connected to live data; phase-based redesign complete on branch)
+### Phase 4 — Testing & Launch (pending)
 
 ---
 
 ## User Workflow Preferences
 
-- **Git operations:** GitHub Desktop or GitHub.com web UI — do NOT instruct command-line git commands
+- **Git operations:** Use GitHub Desktop or GitHub.com web UI — do NOT instruct command-line git commands
+- **Merging branches:** Guide through GitHub Desktop (Branch → Merge into current branch) or GitHub.com Pull Requests
 - **Comfort level:** Non-technical user — give step-by-step UI instructions, avoid terminal commands
-- **Session limit:** If session data is running low during a push loop, stop immediately and report status rather than continuing
 
 ---
 
 ## Branch Naming Convention
 
+Claude Code branches must follow this pattern:
 ```
 claude/<description>-<SESSION_ID>
 ```
