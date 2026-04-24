@@ -160,7 +160,9 @@ export default function UploadsPage() {
             {PHASES.map((phase, i) => {
               const color = phaseColors[i]
               const phaseUploaded = phase.courses.filter(c => uploads[c.code]).length
+              const allUploaded = phaseUploaded === phase.courses.length
               const isSubmitted = submitted[phase.num]
+              const remaining = phase.courses.length - phaseUploaded
 
               return (
                 <section
@@ -199,7 +201,7 @@ export default function UploadsPage() {
                       return (
                         <label
                           key={course.code}
-                          className={`bg-white rounded-xl p-5 cursor-pointer border-2 border-dashed border-zinc-200 transition-all ${color.cardHover} flex flex-col items-center text-center gap-3 group`}
+                          className={`bg-white rounded-xl p-5 cursor-pointer border-2 border-dashed border-zinc-200 transition-all ${isSubmitted ? 'opacity-60 cursor-default' : color.cardHover} flex flex-col items-center text-center gap-3 group`}
                         >
                           <span className={`material-symbols-outlined text-3xl transition-colors ${uploaded ? 'text-green-600' : color.iconColor + ' opacity-60 group-hover:opacity-100'}`} aria-hidden="true">
                             {uploaded ? 'check_circle' : course.icon}
@@ -278,6 +280,9 @@ export default function UploadsPage() {
                       <div className="flex items-center justify-between mb-1.5">
                         <span className="text-xs text-zinc-500 font-medium">{phaseUploaded} of {phase.courses.length} documents uploaded</span>
                         {isSubmitted && <span className="text-xs text-green-600 font-bold">In review</span>}
+                        {!isSubmitted && !allUploaded && phaseUploaded > 0 && (
+                          <span className="text-xs text-zinc-400">{remaining} remaining</span>
+                        )}
                       </div>
                       <div className="h-1.5 w-full bg-zinc-200 rounded-full overflow-hidden">
                         <div
@@ -285,11 +290,22 @@ export default function UploadsPage() {
                           style={{ width: isSubmitted ? '100%' : `${(phaseUploaded / phase.courses.length) * 100}%` }}
                         />
                       </div>
+                      {!isSubmitted && !allUploaded && (
+                        <p className="text-xs text-zinc-400 mt-1.5">
+                          Upload all {phase.courses.length} documents to enable submission
+                        </p>
+                      )}
                     </div>
                     <button
                       onClick={() => submitPhase(phase.num)}
-                      disabled={isSubmitted}
-                      className={`flex-shrink-0 px-6 py-2.5 ${isSubmitted ? 'bg-green-600' : color.submitBtn} text-white font-bold rounded-lg text-sm transition-colors disabled:cursor-default shadow-sm`}
+                      disabled={isSubmitted || !allUploaded}
+                      className={`flex-shrink-0 px-6 py-2.5 ${
+                        isSubmitted
+                          ? 'bg-green-600 cursor-default'
+                          : allUploaded
+                          ? color.submitBtn + ' cursor-pointer'
+                          : 'bg-zinc-300 cursor-not-allowed'
+                      } text-white font-bold rounded-lg text-sm transition-colors shadow-sm`}
                     >
                       {isSubmitted ? '✓ Submitted' : `Submit ${phase.label}`}
                     </button>
@@ -357,7 +373,7 @@ export default function UploadsPage() {
                   <div>
                     <h4 className="font-bold text-sm text-zinc-900 mb-2">Submission Tips</h4>
                     <ul className="space-y-2 text-xs text-zinc-600 leading-relaxed">
-                      <li>Upload files individually as you finish each course, or wait and submit the whole phase at once.</li>
+                      <li>Upload all documents for a phase before submitting — the Submit button activates only when all files are in.</li>
                       <li>Accepted formats: PDF, Word (.docx), and audio files (.mp3, .wav).</li>
                       <li>Your Phase 4 final deliverable is a Panopto video — paste the embed code from Panopto.</li>
                       <li>Each phase is reviewed as a batch by your advisor after you click Submit.</li>
